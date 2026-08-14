@@ -1190,19 +1190,30 @@ html>body{padding:0}</style>
       </div>
       <button class="guestbook-close" type="button" aria-label="关闭留言栏">×</button>
     </header>
-    <p class="guestbook-intro">无需 GitHub 账号。填写昵称和留言即可提交；新留言可能需要审核后才会公开显示。</p>
-    <div class="guestbook-cusdis-shell">
-      <div id="cusdis_thread"
-        data-host="https://cusdis.com"
-        data-app-id="22efcf90-d666-4a77-92ed-815523cfa674"
-        data-page-id="qinggan-roadtrip-map-guestbook"
-        data-page-url="https://threadsewer.github.io/qinggan-roadtrip-map/"
-        data-page-title="青甘大环线路线留言"
-      ></div>
+    <p class="guestbook-intro">无需登录。填写昵称和留言即可提交；新留言经审核后公开显示。</p>
+    <div class="guestbook-scroll">
+      <form class="guestbook-form" aria-label="提交路线留言">
+        <label class="guestbook-field">
+          <span>昵称 <b aria-hidden="true">*</b></span>
+          <input class="guestbook-input" name="nickname" type="text" maxlength="50" autocomplete="nickname" required placeholder="怎么称呼你">
+        </label>
+        <label class="guestbook-field">
+          <span>邮箱 <small>可选，不公开</small></span>
+          <input class="guestbook-input" name="email" type="email" maxlength="160" autocomplete="email" placeholder="用于接收回复（可不填）">
+        </label>
+        <label class="guestbook-field">
+          <span>留言 <b aria-hidden="true">*</b></span>
+          <textarea class="guestbook-input guestbook-textarea" name="content" rows="5" maxlength="1200" required placeholder="补充路线建议、沿途实况，或者留下问题…"></textarea>
+        </label>
+        <div class="guestbook-actions">
+          <button class="guestbook-submit" type="submit">提交留言</button>
+          <button class="guestbook-refresh" type="button">刷新留言</button>
+        </div>
+      </form>
+      <div class="guestbook-status text-small" role="status">展开后读取公开留言。</div>
+      <div class="guestbook-list" aria-live="polite"></div>
     </div>
     <footer class="guestbook-footer text-small">留言将公开显示。请勿留下手机号、订单号、精确住址等隐私信息。</footer>
-    <script defer src="https://cusdis.com/js/widget/lang/zh-cn.js"></script>
-    <script defer src="https://cusdis.com/js/cusdis.es.js"></script>
   </aside>
 </div>
 
@@ -1777,30 +1788,30 @@ html>body{padding:0}</style>
   #qinggan-route-map .daily-map-colorbar-tick { font-weight: 600; }
   #qinggan-route-map .daily-map-context-road {
     fill: none;
-    stroke: light-dark(#77786f,#a9aaa3);
-    stroke-width: .7;
-    stroke-opacity: .46;
+    stroke: light-dark(#555952,#c3c5bd);
+    stroke-width: 1;
+    stroke-opacity: .72;
     stroke-linecap: round;
     stroke-linejoin: round;
     vector-effect: non-scaling-stroke;
     pointer-events: none;
   }
-  #qinggan-route-map .daily-map-context-road.is-secondary { stroke-width: .86; stroke-opacity: .5; }
-  #qinggan-route-map .daily-map-context-road.is-primary { stroke-width: 1.15; stroke-opacity: .58; }
+  #qinggan-route-map .daily-map-context-road.is-secondary { stroke-width: 1.2; stroke-opacity: .78; }
+  #qinggan-route-map .daily-map-context-road.is-primary { stroke-width: 1.65; stroke-opacity: .88; }
   #qinggan-route-map .daily-map-context-road.is-trunk,
-  #qinggan-route-map .daily-map-context-road.is-motorway { stroke-width: 1.55; stroke-opacity: .68; }
+  #qinggan-route-map .daily-map-context-road.is-motorway { stroke-width: 2.05; stroke-opacity: .94; }
   #qinggan-route-map .daily-map-context-road-casing {
     fill: none;
     stroke: light-dark(rgb(255 255 255 / .68),rgb(18 19 18 / .72));
-    stroke-width: 2.9;
-    stroke-opacity: .7;
+    stroke-width: 4;
+    stroke-opacity: .86;
     stroke-linecap: round;
     stroke-linejoin: round;
     vector-effect: non-scaling-stroke;
     pointer-events: none;
   }
   #qinggan-route-map .daily-map-road-label {
-    fill: light-dark(#4f514a,#e0e1db);
+    fill: light-dark(#30342f,#f0f1ea);
     font-size: 9.5px;
     font-weight: 650;
     paint-order: stroke;
@@ -2496,7 +2507,7 @@ html>body{padding:0}</style>
     font-size:12px;
     line-height:1.6;
   }
-  #qinggan-route-map .guestbook-cusdis-shell {
+  #qinggan-route-map .guestbook-scroll {
     flex:1 1 auto;
     min-height:0;
     overflow:auto;
@@ -2504,8 +2515,58 @@ html>body{padding:0}</style>
     padding:4px 3px 8px 0;
     scrollbar-width:thin;
   }
-  #qinggan-route-map #cusdis_thread { min-height:420px; }
-  #qinggan-route-map #cusdis_thread iframe { width:100%; min-height:600px; border:0; color-scheme:light; }
+  #qinggan-route-map .guestbook-form {
+    display:grid;
+    gap:10px;
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    background:color-mix(in srgb,var(--card) 94%,var(--primary) 6%);
+  }
+  #qinggan-route-map .guestbook-field { display:grid; gap:5px; color:var(--foreground); font-size:12px; font-weight:680; }
+  #qinggan-route-map .guestbook-field b { color:var(--primary); }
+  #qinggan-route-map .guestbook-field small { margin-left:4px; color:var(--muted-foreground); font-size:10px; font-weight:500; }
+  #qinggan-route-map .guestbook-input {
+    width:100%;
+    box-sizing:border-box;
+    border:1px solid color-mix(in srgb,var(--border) 88%,var(--foreground) 12%);
+    border-radius:10px;
+    background:var(--background);
+    color:var(--foreground);
+    padding:9px 10px;
+    font:500 12px/1.45 inherit;
+  }
+  #qinggan-route-map .guestbook-input::placeholder { color:color-mix(in srgb,var(--muted-foreground) 78%,transparent); }
+  #qinggan-route-map .guestbook-textarea { min-height:104px; resize:vertical; }
+  #qinggan-route-map .guestbook-actions { display:flex; gap:8px; }
+  #qinggan-route-map .guestbook-submit,
+  #qinggan-route-map .guestbook-refresh {
+    min-height:38px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:0 13px;
+    font:700 12px/1 inherit;
+    cursor:pointer;
+  }
+  #qinggan-route-map .guestbook-submit { flex:1 1 auto; border-color:var(--primary); background:var(--primary); color:var(--primary-foreground); }
+  #qinggan-route-map .guestbook-refresh { background:var(--background); color:var(--foreground); }
+  #qinggan-route-map :is(.guestbook-submit,.guestbook-refresh):disabled { cursor:wait; opacity:.58; }
+  #qinggan-route-map .guestbook-status { margin:12px 2px 8px; color:var(--muted-foreground); line-height:1.55; }
+  #qinggan-route-map .guestbook-status[data-state="success"] { color:color-mix(in srgb,var(--viz-series-3) 78%,var(--foreground)); }
+  #qinggan-route-map .guestbook-status[data-state="error"] { color:color-mix(in srgb,#b42318 82%,var(--foreground)); }
+  #qinggan-route-map .guestbook-list { display:grid; gap:8px; }
+  #qinggan-route-map .guestbook-comment {
+    padding:11px 12px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:var(--background);
+  }
+  #qinggan-route-map .guestbook-comment.is-reply { margin-left:15px; border-left:3px solid color-mix(in srgb,var(--primary) 45%,var(--border)); }
+  #qinggan-route-map .guestbook-comment-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  #qinggan-route-map .guestbook-comment-author { color:var(--foreground); font-size:12px; font-weight:750; }
+  #qinggan-route-map .guestbook-comment-time { color:var(--muted-foreground); font-size:10px; white-space:nowrap; }
+  #qinggan-route-map .guestbook-comment-body { margin:7px 0 0; color:var(--card-foreground); font-size:12px; line-height:1.62; white-space:pre-wrap; overflow-wrap:anywhere; }
+  #qinggan-route-map .guestbook-empty { padding:18px 12px; border:1px dashed var(--border); border-radius:13px; color:var(--muted-foreground); font-size:12px; line-height:1.6; text-align:center; }
   #qinggan-route-map .guestbook-footer {
     margin-top:12px;
     padding-top:11px;
@@ -2513,7 +2574,7 @@ html>body{padding:0}</style>
     color:var(--muted-foreground);
     line-height:1.55;
   }
-  #qinggan-route-map :is(button,a,select,input):focus-visible {
+  #qinggan-route-map :is(button,a,select,input,textarea):focus-visible {
     outline:3px solid color-mix(in srgb,var(--primary) 35%,transparent);
     outline-offset:2px;
   }
@@ -4610,19 +4671,128 @@ html>body{padding:0}</style>
   const drawer = root?.querySelector('.guestbook-drawer');
   const closeButton = root?.querySelector('.guestbook-close');
   const scrim = root?.querySelector('.guestbook-scrim');
-  if (!root || !trigger || !drawer || !closeButton || !scrim) return;
+  const form = root?.querySelector('.guestbook-form');
+  const refreshButton = root?.querySelector('.guestbook-refresh');
+  const status = root?.querySelector('.guestbook-status');
+  const list = root?.querySelector('.guestbook-list');
+  if (!root || !trigger || !drawer || !closeButton || !scrim || !form || !refreshButton || !status || !list) return;
+
+  const apiUrl = 'https://cusdis.com/api/open/comments';
+  const appId = '22efcf90-d666-4a77-92ed-815523cfa674';
+  const pageId = 'qinggan-roadtrip-map-guestbook';
+  const pageUrl = 'https://threadsewer.github.io/qinggan-roadtrip-map/';
+  const pageTitle = '青甘大环线路线留言';
+  let loaded = false;
+  let loading = false;
+
+  const setStatus = (message,state = '') => {
+    status.textContent = message;
+    if (state) status.dataset.state = state;
+    else delete status.dataset.state;
+  };
+
+  const htmlToText = value => {
+    const parsed = new DOMParser().parseFromString(String(value || ''),'text/html');
+    return (parsed.body.textContent || '').trim();
+  };
+
+  const createComment = (comment,isReply = false) => {
+    const article = document.createElement('article');
+    article.className = 'guestbook-comment' + (isReply ? ' is-reply' : '');
+    const head = document.createElement('div');
+    head.className = 'guestbook-comment-head';
+    const author = document.createElement('span');
+    author.className = 'guestbook-comment-author';
+    author.textContent = comment.moderator?.displayName || comment.by_nickname || '访客';
+    const time = document.createElement('time');
+    time.className = 'guestbook-comment-time';
+    time.textContent = comment.parsedCreatedAt || '';
+    const body = document.createElement('p');
+    body.className = 'guestbook-comment-body';
+    body.textContent = comment.content || htmlToText(comment.parsedContent) || '（空留言）';
+    head.append(author,time);
+    article.append(head,body);
+    (comment.replies?.data || []).forEach(reply => article.appendChild(createComment(reply,true)));
+    return article;
+  };
+
+  async function loadComments(force = false) {
+    if (loading || (loaded && !force)) return;
+    loading = true;
+    refreshButton.disabled = true;
+    setStatus(force ? '正在刷新公开留言…' : '正在读取公开留言…');
+    try {
+      const query = new URLSearchParams({page:'1',appId,pageId});
+      const response = await fetch(apiUrl + '?' + query.toString());
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const payload = await response.json();
+      const comments = payload?.data?.data || [];
+      list.replaceChildren();
+      if (comments.length) comments.forEach(comment => list.appendChild(createComment(comment)));
+      else {
+        const empty = document.createElement('div');
+        empty.className = 'guestbook-empty';
+        empty.textContent = '还没有公开留言。你可以成为第一个补充路线建议或沿途实况的人。';
+        list.appendChild(empty);
+      }
+      loaded = true;
+      setStatus(comments.length ? '已显示 ' + comments.length + ' 条公开留言。' : '留言板已连接，目前为空。','success');
+    } catch (error) {
+      setStatus('暂时无法读取公开留言，但上方文本框仍可尝试提交。' + (error?.message ? '（' + error.message + '）' : ''),'error');
+    } finally {
+      loading = false;
+      refreshButton.disabled = false;
+    }
+  }
+
+  form.addEventListener('submit',async event => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const fields = new FormData(form);
+    const nickname = String(fields.get('nickname') || '').trim();
+    const email = String(fields.get('email') || '').trim();
+    const content = String(fields.get('content') || '').trim();
+    if (!nickname || !content) return;
+    const submitButton = form.querySelector('.guestbook-submit');
+    submitButton.disabled = true;
+    refreshButton.disabled = true;
+    submitButton.textContent = '提交中…';
+    setStatus('正在提交留言…');
+    try {
+      const response = await fetch(apiUrl,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({appId,pageId,pageUrl,pageTitle,nickname,email,content})
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(payload?.message || 'HTTP ' + response.status);
+      form.reset();
+      loaded = false;
+      setStatus('提交成功。留言审核通过后会显示在这里。','success');
+    } catch (error) {
+      setStatus('提交失败，请稍后再试。' + (error?.message ? '（' + error.message + '）' : ''),'error');
+    } finally {
+      submitButton.disabled = false;
+      refreshButton.disabled = false;
+      submitButton.textContent = '提交留言';
+    }
+  });
 
   const setOpen = open => {
     root.classList.toggle('guestbook-open',open);
     trigger.setAttribute('aria-expanded',String(open));
     drawer.setAttribute('aria-hidden',String(!open));
-    if (open) closeButton.focus({preventScroll:true});
+    if (open) {
+      closeButton.focus({preventScroll:true});
+      loadComments();
+    }
     else trigger.focus({preventScroll:true});
   };
 
   trigger.addEventListener('click',() => setOpen(true));
   closeButton.addEventListener('click',() => setOpen(false));
   scrim.addEventListener('click',() => setOpen(false));
+  refreshButton.addEventListener('click',() => loadComments(true));
   document.addEventListener('keydown',event => {
     if (event.key === 'Escape' && root.classList.contains('guestbook-open')) setOpen(false);
   });
