@@ -1190,9 +1190,13 @@ html>body{padding:0}</style>
       </div>
       <button class="guestbook-close" type="button" aria-label="关闭留言栏">×</button>
     </header>
-    <p class="guestbook-intro">无需登录。填写昵称和留言即可提交；新留言经审核后公开显示。</p>
+    <p class="guestbook-intro">无需登录。填写昵称和留言即可提交；提交走浏览器原生通道，不依赖容易被拦截的跨域脚本。新留言经审核后公开显示。</p>
     <div class="guestbook-scroll">
-      <form class="guestbook-form" aria-label="提交路线留言">
+      <form class="guestbook-form" aria-label="提交路线留言" action="https://cusdis.com/api/open/comments" method="post" target="qinggan-cusdis-submit-result" accept-charset="UTF-8">
+        <input type="hidden" name="appId" value="22efcf90-d666-4a77-92ed-815523cfa674">
+        <input type="hidden" name="pageId" value="qinggan-roadtrip-map-guestbook">
+        <input type="hidden" name="pageUrl" value="https://threadsewer.github.io/qinggan-roadtrip-map/">
+        <input type="hidden" name="pageTitle" value="青甘大环线路线留言">
         <label class="guestbook-field">
           <span>昵称 <b aria-hidden="true">*</b></span>
           <input class="guestbook-input" name="nickname" type="text" maxlength="50" autocomplete="nickname" required placeholder="怎么称呼你">
@@ -1210,6 +1214,7 @@ html>body{padding:0}</style>
           <button class="guestbook-refresh" type="button">刷新留言</button>
         </div>
       </form>
+      <iframe class="guestbook-submit-result" name="qinggan-cusdis-submit-result" title="留言提交回执" tabindex="-1" aria-hidden="true"></iframe>
       <div class="guestbook-status text-small" role="status">展开后读取公开留言。</div>
       <div class="guestbook-list" aria-live="polite"></div>
     </div>
@@ -2523,6 +2528,7 @@ html>body{padding:0}</style>
     border-radius:15px;
     background:color-mix(in srgb,var(--card) 94%,var(--primary) 6%);
   }
+  #qinggan-route-map .guestbook-submit-result { display:none; width:0; height:0; border:0; }
   #qinggan-route-map .guestbook-field { display:grid; gap:5px; color:var(--foreground); font-size:12px; font-weight:680; }
   #qinggan-route-map .guestbook-field b { color:var(--primary); }
   #qinggan-route-map .guestbook-field small { margin-left:4px; color:var(--muted-foreground); font-size:10px; font-weight:500; }
@@ -4675,7 +4681,8 @@ html>body{padding:0}</style>
   const refreshButton = root?.querySelector('.guestbook-refresh');
   const status = root?.querySelector('.guestbook-status');
   const list = root?.querySelector('.guestbook-list');
-  if (!root || !trigger || !drawer || !closeButton || !scrim || !form || !refreshButton || !status || !list) return;
+  const submitResult = root?.querySelector('.guestbook-submit-result');
+  if (!root || !trigger || !drawer || !closeButton || !scrim || !form || !refreshButton || !status || !list || !submitResult) return;
 
   const apiUrl = 'https://cusdis.com/api/open/comments';
   const appId = '22efcf90-d666-4a77-92ed-815523cfa674';
@@ -4684,6 +4691,8 @@ html>body{padding:0}</style>
   const pageTitle = '青甘大环线路线留言';
   let loaded = false;
   let loading = false;
+  let submitting = false;
+  let submitTimeout = 0;
 
   const setStatus = (message,state = '') => {
     status.textContent = message;
@@ -4745,37 +4754,50 @@ html>body{padding:0}</style>
     }
   }
 
-  form.addEventListener('submit',async event => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
+  const finishSubmit = (message,state = '') => {
+    const submitButton = form.querySelector('.guestbook-submit');
+    submitting = false;
+    window.clearTimeout(submitTimeout);
+    submitButton.disabled = false;
+    refreshButton.disabled = false;
+    submitButton.textContent = '提交留言';
+    setStatus(message,state);
+  };
+
+  submitResult.addEventListener('load',() => {
+    if (!submitting) return;
+    form.reset();
+    loaded = false;
+    finishSubmit('留言请求已送达 Cusdis。审核通过后会显示在这里。','success');
+  });
+
+  form.addEventListener('submit',event => {
+    if (!form.reportValidity()) {
+      event.preventDefault();
+      return;
+    }
     const fields = new FormData(form);
     const nickname = String(fields.get('nickname') || '').trim();
     const email = String(fields.get('email') || '').trim();
     const content = String(fields.get('content') || '').trim();
-    if (!nickname || !content) return;
+    if (!nickname || !content) {
+      event.preventDefault();
+      return;
+    }
+    form.elements.nickname.value = nickname;
+    form.elements.email.value = email;
+    form.elements.content.value = content;
     const submitButton = form.querySelector('.guestbook-submit');
+    submitting = true;
     submitButton.disabled = true;
     refreshButton.disabled = true;
     submitButton.textContent = '提交中…';
-    setStatus('正在提交留言…');
-    try {
-      const response = await fetch(apiUrl,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({appId,pageId,pageUrl,pageTitle,nickname,email,content})
-      });
-      const payload = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(payload?.message || 'HTTP ' + response.status);
-      form.reset();
-      loaded = false;
-      setStatus('提交成功。留言审核通过后会显示在这里。','success');
-    } catch (error) {
-      setStatus('提交失败，请稍后再试。' + (error?.message ? '（' + error.message + '）' : ''),'error');
-    } finally {
-      submitButton.disabled = false;
-      refreshButton.disabled = false;
-      submitButton.textContent = '提交留言';
-    }
+    setStatus('正在通过浏览器原生通道提交…');
+    window.clearTimeout(submitTimeout);
+    submitTimeout = window.setTimeout(() => {
+      if (!submitting) return;
+      finishSubmit('没有收到 Cusdis 回执；当前网络可能屏蔽了 cusdis.com。留言内容仍保留在输入框中，可稍后重试。','error');
+    },15000);
   });
 
   const setOpen = open => {
