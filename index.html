@@ -4747,10 +4747,10 @@ html>body{padding:0}</style>
       loaded = true;
       setStatus(comments.length ? '已显示 ' + comments.length + ' 条公开留言。' : '留言板已连接，目前为空。','success');
     } catch (error) {
-      setStatus('暂时无法读取公开留言，但上方文本框仍可尝试提交。' + (error?.message ? '（' + error.message + '）' : ''),'error');
+      if (!submitting) setStatus('当前浏览器没有载入公开留言列表；这不影响上方原生表单提交。');
     } finally {
       loading = false;
-      refreshButton.disabled = false;
+      refreshButton.disabled = submitting;
     }
   }
 
