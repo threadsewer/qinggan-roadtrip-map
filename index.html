@@ -1190,14 +1190,19 @@ html>body{padding:0}</style>
       </div>
       <button class="guestbook-close" type="button" aria-label="关闭留言栏">×</button>
     </header>
-    <p class="guestbook-intro">留言公开保存在 GitHub 专用帖子中。网页只读取公开评论；写留言时会打开 GitHub，登录后即可提交。</p>
-    <div class="guestbook-actions">
-      <a class="btn btn-primary guestbook-write" href="https://github.com/threadsewer/qinggan-roadtrip-map/issues/1#issuecomment-new" target="_blank" rel="noopener noreferrer">写一条留言 ↗</a>
-      <button class="btn guestbook-refresh" type="button">刷新</button>
+    <p class="guestbook-intro">无需 GitHub 账号。填写昵称和留言即可提交；新留言可能需要审核后才会公开显示。</p>
+    <div class="guestbook-cusdis-shell">
+      <div id="cusdis_thread"
+        data-host="https://cusdis.com"
+        data-app-id="22efcf90-d666-4a77-92ed-815523cfa674"
+        data-page-id="qinggan-roadtrip-map-guestbook"
+        data-page-url="https://threadsewer.github.io/qinggan-roadtrip-map/"
+        data-page-title="青甘大环线路线留言"
+      ></div>
     </div>
-    <div class="guestbook-status text-small" role="status">展开后加载留言。</div>
-    <div class="guestbook-list" aria-live="polite"></div>
-    <footer class="guestbook-footer text-small">请勿留下手机号、订单号、精确住址等隐私信息。<a href="https://github.com/threadsewer/qinggan-roadtrip-map/issues/1" target="_blank" rel="noopener noreferrer">查看完整留言帖</a></footer>
+    <footer class="guestbook-footer text-small">留言将公开显示。请勿留下手机号、订单号、精确住址等隐私信息。</footer>
+    <script defer src="https://cusdis.com/js/widget/lang/zh-cn.js"></script>
+    <script defer src="https://cusdis.com/js/cusdis.es.js"></script>
   </aside>
 </div>
 
@@ -2491,31 +2496,16 @@ html>body{padding:0}</style>
     font-size:12px;
     line-height:1.6;
   }
-  #qinggan-route-map .guestbook-actions { display:flex; gap:8px; }
-  #qinggan-route-map .guestbook-actions .btn { justify-content:center; min-height:38px; }
-  #qinggan-route-map .guestbook-write { flex:1 1 auto; text-decoration:none; }
-  #qinggan-route-map .guestbook-status { margin:13px 2px 8px; color:var(--muted-foreground); }
-  #qinggan-route-map .guestbook-list {
+  #qinggan-route-map .guestbook-cusdis-shell {
     flex:1 1 auto;
     min-height:0;
     overflow:auto;
-    padding:2px 3px 4px 0;
+    margin-top:4px;
+    padding:4px 3px 8px 0;
     scrollbar-width:thin;
   }
-  #qinggan-route-map .guestbook-comment {
-    padding:13px;
-    border:1px solid var(--border);
-    border-radius:14px;
-    background:color-mix(in srgb,var(--card) 91%,var(--primary) 9%);
-  }
-  #qinggan-route-map .guestbook-comment + .guestbook-comment { margin-top:8px; }
-  #qinggan-route-map .guestbook-comment-head { display:flex; align-items:center; gap:9px; margin-bottom:8px; }
-  #qinggan-route-map .guestbook-avatar { width:30px; height:30px; border-radius:50%; background:var(--muted); }
-  #qinggan-route-map .guestbook-author { min-width:0; font-size:12px; font-weight:740; }
-  #qinggan-route-map .guestbook-time { display:block; margin-top:1px; color:var(--muted-foreground); font-size:10px; font-weight:500; }
-  #qinggan-route-map .guestbook-comment p { margin:0; color:var(--card-foreground); font-size:12px; line-height:1.62; white-space:pre-wrap; overflow-wrap:anywhere; }
-  #qinggan-route-map .guestbook-permalink { display:inline-flex; margin-top:8px; color:var(--primary); font-size:10px; text-decoration:none; }
-  #qinggan-route-map .guestbook-empty { padding:22px 12px; border:1px dashed var(--border); border-radius:14px; color:var(--muted-foreground); font-size:12px; line-height:1.6; text-align:center; }
+  #qinggan-route-map #cusdis_thread { min-height:420px; }
+  #qinggan-route-map #cusdis_thread iframe { width:100%; min-height:600px; border:0; color-scheme:light; }
   #qinggan-route-map .guestbook-footer {
     margin-top:12px;
     padding-top:11px;
@@ -2523,7 +2513,6 @@ html>body{padding:0}</style>
     color:var(--muted-foreground);
     line-height:1.55;
   }
-  #qinggan-route-map .guestbook-footer a { color:var(--primary); }
   #qinggan-route-map :is(button,a,select,input):focus-visible {
     outline:3px solid color-mix(in srgb,var(--primary) 35%,transparent);
     outline-offset:2px;
@@ -4621,95 +4610,19 @@ html>body{padding:0}</style>
   const drawer = root?.querySelector('.guestbook-drawer');
   const closeButton = root?.querySelector('.guestbook-close');
   const scrim = root?.querySelector('.guestbook-scrim');
-  const refreshButton = root?.querySelector('.guestbook-refresh');
-  const status = root?.querySelector('.guestbook-status');
-  const list = root?.querySelector('.guestbook-list');
-  if (!root || !trigger || !drawer || !closeButton || !scrim || !refreshButton || !status || !list) return;
-
-  const commentsApi = 'https://api.github.com/repos/threadsewer/qinggan-roadtrip-map/issues/1/comments?per_page=30';
-  let loaded = false;
-  let loading = false;
+  if (!root || !trigger || !drawer || !closeButton || !scrim) return;
 
   const setOpen = open => {
     root.classList.toggle('guestbook-open',open);
     trigger.setAttribute('aria-expanded',String(open));
     drawer.setAttribute('aria-hidden',String(!open));
-    if (open) {
-      closeButton.focus({preventScroll:true});
-      if (!loaded) loadComments();
-    } else {
-      trigger.focus({preventScroll:true});
-    }
+    if (open) closeButton.focus({preventScroll:true});
+    else trigger.focus({preventScroll:true});
   };
-
-  const commentCard = comment => {
-    const article = document.createElement('article');
-    article.className = 'guestbook-comment';
-    const head = document.createElement('div');
-    head.className = 'guestbook-comment-head';
-    const avatar = document.createElement('img');
-    avatar.className = 'guestbook-avatar';
-    avatar.src = comment.user?.avatar_url || '';
-    avatar.alt = '';
-    avatar.loading = 'lazy';
-    const identity = document.createElement('div');
-    identity.className = 'guestbook-author';
-    identity.textContent = comment.user?.login || 'GitHub 用户';
-    const time = document.createElement('span');
-    time.className = 'guestbook-time';
-    time.textContent = new Intl.DateTimeFormat('zh-CN',{dateStyle:'medium',timeStyle:'short'}).format(new Date(comment.created_at));
-    identity.appendChild(time);
-    head.append(avatar,identity);
-    const body = document.createElement('p');
-    body.textContent = (comment.body || '').trim().slice(0,1200) || '（空留言）';
-    const permalink = document.createElement('a');
-    permalink.className = 'guestbook-permalink';
-    permalink.href = comment.html_url;
-    permalink.target = '_blank';
-    permalink.rel = 'noopener noreferrer';
-    permalink.textContent = '在 GitHub 查看 ↗';
-    article.append(head,body,permalink);
-    return article;
-  };
-
-  async function loadComments(force = false) {
-    if (loading || (loaded && !force)) return;
-    loading = true;
-    refreshButton.disabled = true;
-    status.textContent = force ? '正在刷新公开留言…' : '正在加载公开留言…';
-    try {
-      const response = await fetch(commentsApi,{headers:{Accept:'application/vnd.github+json'}});
-      if (!response.ok) throw new Error('GitHub API ' + response.status);
-      const comments = await response.json();
-      list.replaceChildren();
-      if (!comments.length) {
-        const empty = document.createElement('div');
-        empty.className = 'guestbook-empty';
-        empty.textContent = '还没有留言。你可以成为第一个补充路线建议或沿途实况的人。';
-        list.appendChild(empty);
-      } else {
-        comments.slice().reverse().forEach(comment => list.appendChild(commentCard(comment)));
-      }
-      loaded = true;
-      status.textContent = comments.length ? '已显示 ' + comments.length + ' 条公开留言（最新在前）。' : '留言板已连接，目前为空。';
-    } catch (error) {
-      console.warn('Guestbook comments load failed',error);
-      list.replaceChildren();
-      const empty = document.createElement('div');
-      empty.className = 'guestbook-empty';
-      empty.textContent = '暂时无法读取留言，可能是网络或 GitHub 匿名访问频率限制。仍可使用上方按钮直接打开留言帖。';
-      list.appendChild(empty);
-      status.textContent = '留言加载失败（' + error.message + '）；请稍后刷新。';
-    } finally {
-      loading = false;
-      refreshButton.disabled = false;
-    }
-  }
 
   trigger.addEventListener('click',() => setOpen(true));
   closeButton.addEventListener('click',() => setOpen(false));
   scrim.addEventListener('click',() => setOpen(false));
-  refreshButton.addEventListener('click',() => loadComments(true));
   document.addEventListener('keydown',event => {
     if (event.key === 'Escape' && root.classList.contains('guestbook-open')) setOpen(false);
   });
