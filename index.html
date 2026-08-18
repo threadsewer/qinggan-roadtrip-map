@@ -900,7 +900,7 @@ html>body{padding:0}</style>
   <header class="route-hero">
     <div class="route-eyebrow">QINGHAI · GANSU · 2026.08.20—08.26</div>
     <h2>青甘环线 · 每日路线地图</h2>
-    <p>已按 8 月 17 日的新安排重排主方案：丹霞后回张掖市区，大柴旦后住茶卡，次日经黑马河 / 青海湖回西宁；同时给 G318 加入逐日油电策略。</p>
+    <p>已按 8 月 17 日的新安排重排主方案：丹霞后回张掖市区，大柴旦后住茶卡，次日经黑马河 / 青海湖回西宁；同时给 G318 加入逐日油电策略与全程海拔剖面。</p>
     <div class="route-hero-facts" aria-label="行程基本信息">
       <span>8/20 00:55 抵达西宁</span><span>7 天 / 6 晚</span><span>2 人 1 狗</span><span>深蓝 G318 四驱</span><span>当前主方案 A</span>
     </div>
@@ -1027,6 +1027,24 @@ html>body{padding:0}</style>
     </svg>
     <div class="map-selection-note text-small" aria-live="polite"></div>
   </div>
+  <section class="card route-elevation-profile" aria-labelledby="route-elevation-title">
+    <div class="elevation-profile-heading">
+      <div>
+        <div class="section-kicker">ALTITUDE PROFILE · PLAN A</div>
+        <h3 id="route-elevation-title">主方案 A · 全程海拔剖面</h3>
+      </div>
+      <div class="elevation-profile-range">约 1,090–3,817 m · 主线约 2,382 km</div>
+    </div>
+    <div class="elevation-profile-stage">
+      <svg role="img" aria-labelledby="route-elevation-svg-title route-elevation-svg-desc">
+        <title id="route-elevation-svg-title">主方案 A 全程海拔变化</title>
+        <desc id="route-elevation-svg-desc">从西宁经张掖、敦煌、冷湖、火星公路、大柴旦、茶卡、黑马河和日月山返回西宁的海拔剖面；标出每天边界、住宿地、三千米和三千五百米以上路段，以及主要山口。</desc>
+      </svg>
+      <div class="elevation-profile-tooltip" role="tooltip" hidden></div>
+    </div>
+    <p class="elevation-profile-takeaway"><strong>看图重点：</strong>D1 祁连山道路高点约 3,640 m；D3 现行 G3011 隧道群约 3,300–3,400 m；D5 羊肠子沟约 3,784 m；D6 橡皮山约 3,817 m、现行高速日月山段约 3,380 m。D5 并非一路平缓，是此前文字版遗漏的高点，现已修正。</p>
+    <p class="elevation-profile-source text-small text-muted">这是按当前主路线关键节点绘制的驾驶高程趋势，不是逐米测量：横轴采用高德每日主线里程，海拔综合 <a href="https://open-meteo.com/en/docs/elevation-api" target="_blank" rel="noopener noreferrer">Open-Meteo / Copernicus DEM</a>、<a href="https://jtys.gansu.gov.cn/jtys/c106393/202203/1997841/files/2c4c3d07f14044229d0515fd6b6634d1.pdf" target="_blank" rel="noopener noreferrer">G3011 项目资料</a>、<a href="https://jtt.shandong.gov.cn/jssc/ejf/personInfo?cmd=personInfoView&amp;from=dacheng&amp;id=TECH0000000000349045&amp;source=sy&amp;tt=sg" target="_blank" rel="noopener noreferrer">羊肠子沟工程坐标</a>与<a href="https://m.news.cntv.cn/2015/08/08/ARTI1438999942173108.shtml" target="_blank" rel="noopener noreferrer">湟倒公路资料</a>校正；不含市内机动及景点支线。</p>
+  </section>
   <div class="card route-detail" aria-live="polite"></div>
   <section class="sight-summary" aria-labelledby="sight-summary-title">
     <h3 id="sight-summary-title">方案 A · 有狗版景点总表</h3>
@@ -2047,6 +2065,7 @@ html>body{padding:0}</style>
   #qinggan-route-map .live-conditions,
   #qinggan-route-map .route-review,
   #qinggan-route-map .map-stage,
+  #qinggan-route-map .route-elevation-profile,
   #qinggan-route-map .route-detail,
   #qinggan-route-map .sight-summary,
   #qinggan-route-map .pet-route-atlas,
@@ -2309,6 +2328,141 @@ html>body{padding:0}</style>
     border-radius:20px;
   }
   #qinggan-route-map .map-stage svg { border-radius:14px; }
+  #qinggan-route-map .route-elevation-profile {
+    margin-top:10px;
+    padding:clamp(16px,2.4vw,24px);
+    border-radius:18px;
+  }
+  #qinggan-route-map .route-elevation-profile[hidden] { display:none; }
+  #qinggan-route-map .elevation-profile-heading {
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:8px 20px;
+    margin-bottom:10px;
+  }
+  #qinggan-route-map .elevation-profile-heading h3 {
+    margin:2px 0 0;
+    font-size:clamp(18px,2.2vw,25px);
+    letter-spacing:-.02em;
+  }
+  #qinggan-route-map .elevation-profile-range {
+    color:var(--muted-foreground);
+    font-size:12px;
+    font-weight:650;
+    white-space:nowrap;
+  }
+  #qinggan-route-map .elevation-profile-stage {
+    position:relative;
+    width:100%;
+  }
+  #qinggan-route-map .elevation-profile-stage svg {
+    display:block;
+    width:100%;
+    overflow:visible;
+  }
+  #qinggan-route-map .elevation-profile-frame {
+    fill:none;
+    stroke:var(--border);
+    stroke-width:1;
+    vector-effect:non-scaling-stroke;
+  }
+  #qinggan-route-map .elevation-altitude-band { pointer-events:none; }
+  #qinggan-route-map .elevation-grid line,
+  #qinggan-route-map .elevation-day-boundary {
+    stroke:var(--border);
+    stroke-width:1;
+    vector-effect:non-scaling-stroke;
+  }
+  #qinggan-route-map .elevation-day-boundary { stroke-dasharray:3 4; }
+  #qinggan-route-map .elevation-grid text,
+  #qinggan-route-map .elevation-axis text,
+  #qinggan-route-map .elevation-band-label,
+  #qinggan-route-map .elevation-day-label,
+  #qinggan-route-map .elevation-stay-label,
+  #qinggan-route-map .elevation-peak-label {
+    fill:var(--foreground);
+    font-size:11px;
+  }
+  #qinggan-route-map .elevation-grid text,
+  #qinggan-route-map .elevation-axis text,
+  #qinggan-route-map .elevation-band-label { fill:var(--muted-foreground); }
+  #qinggan-route-map .elevation-axis path,
+  #qinggan-route-map .elevation-axis line {
+    stroke:var(--border);
+    vector-effect:non-scaling-stroke;
+  }
+  #qinggan-route-map .elevation-axis-title {
+    fill:var(--foreground);
+    font-size:12px;
+    font-weight:650;
+  }
+  #qinggan-route-map .elevation-area {
+    fill:var(--primary);
+    fill-opacity:.12;
+  }
+  #qinggan-route-map .elevation-day-line {
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    vector-effect:non-scaling-stroke;
+    transition:opacity 160ms ease,stroke-width 160ms ease;
+  }
+  #qinggan-route-map .elevation-stay-dot,
+  #qinggan-route-map .elevation-peak-dot,
+  #qinggan-route-map .elevation-hover-dot {
+    fill:var(--background);
+    stroke-width:2.5;
+    vector-effect:non-scaling-stroke;
+  }
+  #qinggan-route-map .elevation-stay-label,
+  #qinggan-route-map .elevation-peak-label {
+    font-weight:650;
+    paint-order:stroke;
+    stroke:var(--background);
+    stroke-width:4px;
+    stroke-linejoin:round;
+  }
+  #qinggan-route-map .elevation-day-label { font-weight:650; }
+  #qinggan-route-map .elevation-hover-guide {
+    stroke:var(--foreground);
+    stroke-width:1;
+    stroke-dasharray:3 3;
+    pointer-events:none;
+    vector-effect:non-scaling-stroke;
+  }
+  #qinggan-route-map .elevation-hover-overlay {
+    fill:transparent;
+    cursor:crosshair;
+  }
+  #qinggan-route-map .elevation-profile-tooltip {
+    position:absolute;
+    z-index:4;
+    max-width:220px;
+    padding:7px 9px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--popover);
+    color:var(--popover-foreground);
+    box-shadow:0 8px 22px color-mix(in srgb,var(--foreground) 14%,transparent);
+    font-size:12px;
+    line-height:1.4;
+    pointer-events:none;
+    transform:translate(12px,-50%);
+  }
+  #qinggan-route-map .elevation-profile-tooltip.is-left { transform:translate(calc(-100% - 12px),-50%); }
+  #qinggan-route-map .elevation-profile-takeaway {
+    margin:10px 0 0;
+    padding:9px 11px;
+    border-left:3px solid var(--primary);
+    background:color-mix(in srgb,var(--primary) 7%,transparent);
+  }
+  #qinggan-route-map .elevation-profile-source { margin:8px 0 0; }
+  #qinggan-route-map .elevation-profile-source a {
+    color:var(--primary);
+    text-decoration:underline;
+    text-underline-offset:2px;
+  }
   #qinggan-route-map .route-detail {
     padding:clamp(16px,2.4vw,24px);
     border-radius:18px;
@@ -2605,6 +2759,10 @@ html>body{padding:0}</style>
     #qinggan-route-map .route-review-rank { white-space:normal; }
     #qinggan-route-map .route-review-grid { grid-template-columns:1fr; }
     #qinggan-route-map .live-conditions-heading { align-items:flex-start; flex-direction:column; }
+    #qinggan-route-map .elevation-profile-heading { align-items:flex-start; flex-direction:column; }
+    #qinggan-route-map .elevation-profile-range { white-space:normal; }
+    #qinggan-route-map .route-elevation-profile { padding:13px 10px; }
+    #qinggan-route-map .elevation-profile-takeaway { padding:8px; }
     #qinggan-route-map .live-conditions-grid { grid-template-columns:1fr; }
     #qinggan-route-map .map-stage { padding:4px; border-radius:15px; }
     #qinggan-route-map .daily-map-item { padding:11px; }
@@ -2666,6 +2824,10 @@ html>body{padding:0}</style>
   const root = document.getElementById('qinggan-route-map');
   const svg = d3.select(root.querySelector('svg'));
   const stage = root.querySelector('.map-stage');
+  const elevationSection = root.querySelector('.route-elevation-profile');
+  const elevationStage = root.querySelector('.elevation-profile-stage');
+  const elevationSvg = d3.select(root.querySelector('.elevation-profile-stage svg'));
+  const elevationTooltip = root.querySelector('.elevation-profile-tooltip');
   const dayControls = root.querySelector('.day-controls');
   const detail = root.querySelector('.route-detail');
   const selectionNote = root.querySelector('.map-selection-note');
@@ -2738,14 +2900,42 @@ html>body{padding:0}</style>
   ];
   routes.f_d6 = routes.e_d5.concat(routes.e_d6.slice(1));
 
+  // 方案 A 主线海拔剖面：高德分日里程作横轴，路线节点 DEM 与公开山口资料作纵轴。
+  // 数据是驾驶趋势，不应用于判断瞬时坡度；景点支线与市内机动未计入 2382 km。
+  const elevationProfileDays = [
+    {day:1,date:'8/20',from:'西宁',to:'张掖',start:0,end:417,points:[[0,2254],[69.3,3022],[98.7,2803],[164.3,3396],[214.7,3640],[258.3,2487],[314.8,1609],[341.9,1488],[380.1,1721],[417,1480]]},
+    {day:2,date:'8/21',from:'张掖',to:'敦煌',start:417,end:1007,points:[[417,1480],[496.1,1400],[545.6,1673],[605.5,1451],[677.4,1904],[784.9,1407],[921.4,1134],[981.7,1092],[1007,1140]]},
+    {day:3,date:'8/22',from:'敦煌',to:'冷湖',start:1007,end:1284,points:[[1007,1140],[1052.7,1455],[1098.4,1932],[1121.3,2423],[1165.1,3340],[1182.3,2861],[1249.5,2904],[1284,2779]]},
+    {day:4,date:'8/23',from:'冷湖',to:'大柴旦',start:1284,end:1684,points:[[1284,2779],[1361.8,2829],[1372.7,2688],[1437.8,2752],[1552.8,2705],[1620,3249],[1661.3,3420],[1684,3182]]},
+    {day:5,date:'8/24',from:'大柴旦',to:'茶卡',start:1684,end:2080,points:[[1684,3182],[1698.3,3289],[1756.8,3321],[1783.2,3784],[1839,2854],[1916.9,2836],[1990.7,3010],[2034.1,3291],[2080,3060]]},
+    {day:6,date:'8/25',from:'茶卡',to:'西宁',start:2080,end:2382,points:[[2080,3060],[2085,3127],[2134.5,3817],[2152.2,3217],[2224.4,3234],[2273.1,3380],[2293.1,3374],[2320.7,2995],[2344.8,2540],[2382,2254]]}
+  ];
+  const elevationProfileStays = [
+    {km:0,elevation:2254,name:'西宁',day:1},
+    {km:417,elevation:1480,name:'张掖',day:1},
+    {km:1007,elevation:1140,name:'敦煌',day:2},
+    {km:1284,elevation:2779,name:'冷湖',day:3},
+    {km:1684,elevation:3182,name:'大柴旦',day:4},
+    {km:2080,elevation:3060,name:'茶卡',day:5},
+    {km:2382,elevation:2254,name:'西宁',day:6}
+  ];
+  const elevationProfilePeaks = [
+    {km:214.7,elevation:3640,name:'祁连山道路高点',day:1,note:'导航路线节点 + DEM 约 3640 m；坡前建议保电 65%–70%'},
+    {km:1165.1,elevation:3340,name:'当金山隧道群',day:3,note:'现行 G3011 代表高点；约 3300–3400 m，不走老 G215 垭口'},
+    {km:1661.3,elevation:3420,name:'G315 高点',day:4,note:'约 3420 m，位于接近大柴旦的铺装路段，不是火星土路'},
+    {km:1783.2,elevation:3784,name:'羊肠子沟',day:5,note:'D5 隐蔽的大爬升，坡前切山地保电'},
+    {km:2134.5,elevation:3817,name:'橡皮山',day:6,note:'全程最高点；到顶建议留 45%–55%'},
+    {km:2273.1,elevation:3380,name:'日月山高速段',day:6,note:'现行高速路线节点约 3380 m；随后长下坡，留足回收空间'}
+  ];
+
   const plans = {
       A: [
-        {day:1,date:'8/20',title:'西宁 → 七彩丹霞 → 张掖市区',meta:'约 417 km · 纯驾驶约5小时30分',segments:['a_d1'],roads:'G0611 张汶高速 → 扁都口方向官方通行线 → 张肃一级公路 / 丹霞公路 → 张掖市区',condition:'全程铺装，但旧 G227 景阳岭—门源多段封闭至 2027，必须走 G0611 和当天官方分流；景阳岭隧道局部无照明并有车道施工，丹霞游览另计 1.5–3 小时。',toll:'约 ¥172',altitude:'2254 m → 最高约 3688 m → 丹霞 1744 m → 张掖市区约 1480 m',stay:'张掖市区酒店（以已订订单为端点；未锁定则重新筛选携宠房）',backup:'若丹霞结束过晚才改住景区片区，不把旧景区酒店默认当市区酒店',pet:'七彩丹霞核心区不带狗；采用一人入园、一人在游客中心外陪狗，或整项取消',energy:'西宁市区先用城市 / 纯电；进入山区前切山地并把目标 SOC 设为约 65%–70%，增程器在平路提前工作。临近最后高点把到顶电量控制在约 45%–60%，下坡用 D 挡强回收；出山区切高速 / 经济约 50%，进张掖再用电。不要满电顶着翻山。'},
+        {day:1,date:'8/20',title:'西宁 → 七彩丹霞 → 张掖市区',meta:'约 417 km · 纯驾驶约5小时30分',segments:['a_d1'],roads:'G0611 张汶高速 → 扁都口方向官方通行线 → 张肃一级公路 / 丹霞公路 → 张掖市区',condition:'全程铺装，但旧 G227 景阳岭—门源多段封闭至 2027，必须走 G0611 和当天官方分流；景阳岭隧道局部无照明并有车道施工，丹霞游览另计 1.5–3 小时。',toll:'约 ¥172',altitude:'2254 m → 祁连山段道路高点约 3640 m → 丹霞 1744 m → 张掖市区约 1480 m',stay:'张掖市区酒店（以已订订单为端点；未锁定则重新筛选携宠房）',backup:'若丹霞结束过晚才改住景区片区，不把旧景区酒店默认当市区酒店',pet:'七彩丹霞核心区不带狗；采用一人入园、一人在游客中心外陪狗，或整项取消',energy:'西宁市区先用城市 / 纯电；进入山区前切山地并把目标 SOC 设为约 65%–70%，增程器在平路提前工作。临近最后高点把到顶电量控制在约 45%–60%，下坡用 D 挡强回收；出山区切高速 / 经济约 50%，进张掖再用电。不要满电顶着翻山。'},
         {day:2,date:'8/21',title:'张掖市区 → 酒泉 / 瓜州 → 敦煌',meta:'直达约 590 km · 6小时17分；经大地之子约 608 km · 6小时38分',segments:['a_d2'],roads:'张掖市区 → G30 连霍高速 → G3011 柳格高速 → G215 → 敦煌',condition:'全程铺装；河西走廊主要风险是横风、长直路疲劳和服务区间距。若进酒泉市区并看大地之子，纯驾驶约 615 km / 7小时02分，不能继续沿用截图的 580 km / 5小时55分。',toll:'直达约 ¥200；经酒泉 / 瓜州约 ¥201',altitude:'张掖市区约 1480 m → 最高约 1875 m → 敦煌 1140 m',stay:'主选：敦煌中洲瑞萌（原中洲国际，ID 67825522）',backup:'备选：澜山牧 / 途刻',pet:'中洲瑞萌与澜山牧有近期携犬实住；仍需确认具体房型',energy:'出张掖低速先用电，进入 G30 后用高速 + 经济，目标 SOC 约 50%，安全与限速允许时巡航 90–100 km/h。服务区、瓜州与敦煌低速再用电；桩价低于约 1.8–2.0 元/kWh 且不排队才顺路补至约 80%，否则只加 92 号油。'},
-        {day:3,date:'8/22',title:'敦煌 → 阿克塞 / 苏干湖外沿 → 黑独山 → 冷湖',meta:'直达约 277 km · 3小时44分；条件点组合至少约 6 小时驾驶',segments:['a_d3'],roads:'G3011 柳格高速 → 当金山 / 阿尔金山隧道 → G215 冷湖方向',condition:'全程铺装但连续爬升、长坡、长隧道和横风明显；老 G215 沙山沟—当金山受控，按官方绕行 G3011。苏干湖保护区不对外开放，只能在明确开放的公共点远观；黑独山只走官方入口与摆渡，并当天确认末班。',toll:'约 ¥105',altitude:'1140 m → 最高约 3650 m → 2779 m（净爬升约 1639 m）',stay:'条件主选：茫崖冷湖星际部落',backup:'备选：塞上西海（核同店后） / 雅丹之星',pet:'星际部落有 2026 一人一狗实住；黑独山核心摆渡大概率不接纳宠物，必须提前解决一人陪狗或取消',energy:'敦煌满油、最好 SOC 80% 以上出发；离城后高速模式约 50%，当金山长爬坡前切山地 65%–70%，到顶争取剩 45%–60%，下坡 D 挡强回收。到冷湖至少留 50%–60% 给次日偏远段；高原增程器降额曲线未公开，不能等低电后再追电。'},
-        {day:4,date:'8/23',title:'冷湖 → 火星公路 → 东台 / U 型公路 → 大柴旦',meta:'约 400 km · 8.5–10小时；火星非铺装约95 km',segments:['a_d4a','mars','a_d4b'],roads:'G215 → 火星一号公路北进南出 → G315（东台 → K780 U 型公路）→ 大柴旦',condition:'火星段为碎石、搓板、坑洼与扬尘，雨后可能泥泞，按“近 24–72 小时实况合格才走”处理。东台是采矿生产区而非正式景区，无开放入口就跳过；U 型公路只是国道必经点，严禁在路肩、坡顶或行车道停车拍照。',toll:'约 ¥0',altitude:'2779 m → 最高约 3349 m → 3182 m（火星段为近似轨迹采样）',stay:'主选：大柴旦枫熹酒店',backup:'备选：美豪丽致（ID 134722011） / 喜鹊',pet:'枫熹有近期一人一狗实住；美豪丽致须防同名混订',energy:'冷湖满油，SOC 65%–75% 出发；火星段用山地约 65%–70% + 舒适 / 中等回收，电量底线守在 40%–50%，不强制纯电。只有确遇松散、陷车风险才开地形 / 锁止 / 蠕行功能。回到 G315 后切高速 / 经济 50%–60%，到大柴旦补油并优先顺路充至约 80%。'},
-        {day:5,date:'8/24',title:'大柴旦 → 茶卡镇',meta:'直达约 396 km · 4小时17分；经翡翠湖约 418 km · 4小时53分',segments:['a_d5'],roads:'S20 德小高速 → S2013 茶德高速 → 茶卡镇',condition:'全程铺装、高速为主；G0612 K377+300 附近仅超车道通行，额外预留 15–30 分钟。若早看翡翠湖，再加 1.5–2 小时游览，不把直达时间当作全天时间。',toll:'约 ¥161',altitude:'3182 m → 中途最低约 2836 m → 茶卡约 3060 m',stay:'主选：暖居民宿（茶卡镇，重新书面确认携宠）',backup:'备选：乌兰来都来了 / 茶卡东晨国际',pet:'候选来自此前携程可携宠筛选；因住宿节点刚由黑马河改为茶卡，必须重新确认日期、房型、费用和停车',energy:'高原高速用高速 + 经济约 50%，平路标准 / 中等回收并尽量滑行；持续逆风或明显长坡前临时切山地 60%。德令哈、茶卡低速用电；茶卡有可靠慢充或顺路快充时补至 80%–100%，为次日橡皮山与日月山留电。'},
-        {day:6,date:'8/25',title:'茶卡 → 黑马河 / 青海湖 → 西宁',meta:'约 302 km · 3小时56分；经二郎剑约 308 km · 4小时15分',segments:['a_d6'],roads:'茶卡 → 橡皮山 → 黑马河 / 环湖西路 → G109 / G6 → G0612 → 西宁',condition:'全程铺装，但 G6 K1853–1882 多点单车道施工，预留 20–40 分钟。当前 8/17 模型给黑马河 8/25 雷暴伴冰雹与约 33 mm 降水；若 48 小时预报仍维持，直接走茶卡—共和—西宁，不绕湖。',toll:'约 ¥85',altitude:'茶卡约 3060 m → 橡皮山约 3817 m → 黑马河 3217 m → 日月山约 3432 m → 西宁 2254 m',stay:'主选：和颐酒店（水井巷中心店，ID 1613232）',backup:'备选：原来·新生 / 富力万达文华',pet:'和颐分店需按 ID 核对；原来·新生有拉布拉多实住，万达文华有专门宠物房',energy:'茶卡出发前用山地 65%–70% 翻橡皮山，到顶控制在 45%–55%，下黑马河用 D 挡强回收。湖边低速可用电，但接近日月山前重新保留 55%–65%；翻越后同样给长下坡留回收空间，进西宁再用城市 / 纯电，结束 SOC 可在约 20%–30%。'},
+        {day:3,date:'8/22',title:'敦煌 → 阿克塞 / 苏干湖外沿 → 黑独山 → 冷湖',meta:'直达约 277 km · 3小时44分；条件点组合至少约 6 小时驾驶',segments:['a_d3'],roads:'G3011 柳格高速 → 当金山 / 阿尔金山隧道 → G215 冷湖方向',condition:'全程铺装但连续爬升、长坡、长隧道和横风明显；老 G215 沙山沟—当金山受控，按官方绕行 G3011。苏干湖保护区不对外开放，只能在明确开放的公共点远观；黑独山只走官方入口与摆渡，并当天确认末班。',toll:'约 ¥105',altitude:'1140 m → G3011 当金山 / 阿尔金山隧道群约 3300–3400 m → 2779 m；老 G215 约 3650 m 垭口不在本路线',stay:'条件主选：茫崖冷湖星际部落',backup:'备选：塞上西海（核同店后） / 雅丹之星',pet:'星际部落有 2026 一人一狗实住；黑独山核心摆渡大概率不接纳宠物，必须提前解决一人陪狗或取消',energy:'敦煌满油、最好 SOC 80% 以上出发；离城后高速模式约 50%，当金山长爬坡前切山地 65%–70%，到顶争取剩 45%–60%，下坡 D 挡强回收。到冷湖至少留 50%–60% 给次日偏远段；高原增程器降额曲线未公开，不能等低电后再追电。'},
+        {day:4,date:'8/23',title:'冷湖 → 火星公路 → 东台 / U 型公路 → 大柴旦',meta:'约 400 km · 8.5–10小时；火星非铺装约95 km',segments:['a_d4a','mars','a_d4b'],roads:'G215 → 火星一号公路北进南出 → G315（东台 → K780 U 型公路）→ 大柴旦',condition:'火星段为碎石、搓板、坑洼与扬尘，雨后可能泥泞，按“近 24–72 小时实况合格才走”处理。东台是采矿生产区而非正式景区，无开放入口就跳过；U 型公路只是国道必经点，严禁在路肩、坡顶或行车道停车拍照。',toll:'约 ¥0',altitude:'2779 m → 接近大柴旦的 G315 铺装路段最高约 3420 m → 3182 m（火星段本身约 2700–2900 m）',stay:'主选：大柴旦枫熹酒店',backup:'备选：美豪丽致（ID 134722011） / 喜鹊',pet:'枫熹有近期一人一狗实住；美豪丽致须防同名混订',energy:'冷湖满油，SOC 65%–75% 出发；火星段用山地约 65%–70% + 舒适 / 中等回收，电量底线守在 40%–50%，不强制纯电。只有确遇松散、陷车风险才开地形 / 锁止 / 蠕行功能。回到 G315 后切高速 / 经济 50%–60%，到大柴旦补油并优先顺路充至约 80%。'},
+        {day:5,date:'8/24',title:'大柴旦 → 茶卡镇',meta:'直达约 396 km · 4小时17分；经翡翠湖约 418 km · 4小时53分',segments:['a_d5'],roads:'S20 德小高速 → S2013 茶德高速 → 茶卡镇',condition:'全程铺装、高速为主；G0612 K377+300 附近仅超车道通行，额外预留 15–30 分钟。若早看翡翠湖，再加 1.5–2 小时游览，不把直达时间当作全天时间。',toll:'约 ¥161',altitude:'3182 m → 德小高速羊肠子沟约 3784 m → 中途最低约 2836 m → 茶卡约 3060 m',stay:'主选：暖居民宿（茶卡镇，重新书面确认携宠）',backup:'备选：乌兰来都来了 / 茶卡东晨国际',pet:'候选来自此前携程可携宠筛选；因住宿节点刚由黑马河改为茶卡，必须重新确认日期、房型、费用和停车',energy:'高原高速用高速 + 经济约 50%，平路标准 / 中等回收并尽量滑行；羊肠子沟长爬坡前临时切山地并保电约 60%–65%，翻越后再回高速模式。德令哈、茶卡低速用电；茶卡有可靠慢充或顺路快充时补至 80%–100%，为次日橡皮山与日月山留电。'},
+        {day:6,date:'8/25',title:'茶卡 → 黑马河 / 青海湖 → 西宁',meta:'约 302 km · 3小时56分；经二郎剑约 308 km · 4小时15分',segments:['a_d6'],roads:'茶卡 → 橡皮山 → 黑马河 / 环湖西路 → G109 / G6 → G0612 → 西宁',condition:'全程铺装，但 G6 K1853–1882 多点单车道施工，预留 20–40 分钟。当前 8/17 模型给黑马河 8/25 雷暴伴冰雹与约 33 mm 降水；若 48 小时预报仍维持，直接走茶卡—共和—西宁，不绕湖。',toll:'约 ¥85',altitude:'茶卡约 3060 m → 橡皮山约 3817 m → 黑马河 3217 m → 现行高速日月山段约 3380 m → 西宁 2254 m',stay:'主选：和颐酒店（水井巷中心店，ID 1613232）',backup:'备选：原来·新生 / 富力万达文华',pet:'和颐分店需按 ID 核对；原来·新生有拉布拉多实住，万达文华有专门宠物房',energy:'茶卡出发前用山地 65%–70% 翻橡皮山，到顶控制在 45%–55%，下黑马河用 D 挡强回收。湖边低速可用电，但接近日月山前重新保留 55%–65%；翻越后同样给长下坡留回收空间，进西宁再用城市 / 纯电，结束 SOC 可在约 20%–30%。'},
         {day:7,date:'8/26',title:'西宁市内还车/离开',meta:'预留 1.5–2 小时',segments:[],roads:'西宁市内道路',condition:'城市铺装路；按早高峰和还车手续预留时间。',toll:'约 ¥0',altitude:'约 2254 m，市内变化不大',stay:'无',backup:'8/25 酒店退房后还车/离开',pet:'退房前自行清理宠物毛发并检查遗留物',energy:'用城市 / 纯电优先并保留约 20% 安全余量；按租车订单把 92 号油加到约定刻度。近期同款租赁仅有“满油还车、未要求满电”的车主经验，最终以订单和门店验车规则为准，不为还车额外绕路快充。'}
       ],
       B: [
@@ -3787,6 +3977,176 @@ html>body{padding:0}</style>
     return top * (1 - ty) + bottom * ty;
   }
 
+  function renderElevationProfile() {
+    const isPlanA = currentPlan === 'A';
+    elevationSection.hidden = !isPlanA;
+    if (!isPlanA) {
+      elevationTooltip.hidden = true;
+      return;
+    }
+
+    const width = Math.max(320,Math.floor(elevationStage.getBoundingClientRect().width));
+    const compact = width < 520;
+    const height = compact ? 318 : 360;
+    const margin = compact
+      ? {top:42,right:10,bottom:62,left:50}
+      : {top:46,right:20,bottom:66,left:62};
+    const plotWidth = width - margin.left - margin.right;
+    const plotHeight = height - margin.top - margin.bottom;
+    const x = d3.scaleLinear().domain([0,2382]).range([margin.left,width - margin.right]);
+    const y = d3.scaleLinear().domain([1000,4000]).range([height - margin.bottom,margin.top]);
+    const allPoints = elevationProfileDays.flatMap(day => day.points.map(point => ({km:point[0],elevation:point[1],day:day.day})));
+
+    elevationSvg.attr('viewBox','0 0 ' + width + ' ' + height).attr('height',height);
+    elevationSvg.selectAll('.elevation-rendered').remove();
+    const chart = elevationSvg.append('g').attr('class','elevation-rendered');
+
+    chart.append('rect')
+      .attr('class','elevation-altitude-band')
+      .attr('x',margin.left).attr('y',y(3500))
+      .attr('width',plotWidth).attr('height',y(3000) - y(3500))
+      .attr('fill','var(--yellow)').attr('fill-opacity',.10);
+    chart.append('rect')
+      .attr('class','elevation-altitude-band')
+      .attr('x',margin.left).attr('y',margin.top)
+      .attr('width',plotWidth).attr('height',y(3500) - margin.top)
+      .attr('fill','var(--red)').attr('fill-opacity',.09);
+    chart.append('text').attr('class','elevation-band-label')
+      .attr('x',margin.left + 6).attr('y',y(3500) - 5).text('≥3500 m');
+    chart.append('text').attr('class','elevation-band-label')
+      .attr('x',margin.left + 6).attr('y',y(3000) - 5).text('≥3000 m');
+
+    const grid = chart.append('g').attr('class','elevation-grid')
+      .attr('transform','translate(' + margin.left + ',0)')
+      .call(d3.axisLeft(y).tickValues([1000,2000,3000,3500,4000]).tickSize(-plotWidth).tickFormat(d => d.toLocaleString('zh-CN')));
+    grid.select('.domain').remove();
+
+    elevationProfileDays.forEach(day => {
+      chart.append('rect')
+        .attr('x',x(day.start)).attr('y',margin.top)
+        .attr('width',Math.max(0,x(day.end) - x(day.start))).attr('height',plotHeight)
+        .attr('fill',colors[day.day - 1])
+        .attr('fill-opacity',selectedDay === day.day ? .075 : .018);
+      chart.append('text')
+        .attr('class','elevation-day-label')
+        .attr('x',(x(day.start) + x(day.end)) / 2).attr('y',margin.top - 19)
+        .attr('text-anchor','middle')
+        .attr('fill',colors[day.day - 1])
+        .text(compact ? 'D' + day.day : 'D' + day.day + ' · ' + day.date);
+      chart.append('line')
+        .attr('class','elevation-day-boundary')
+        .attr('x1',x(day.end)).attr('x2',x(day.end))
+        .attr('y1',margin.top).attr('y2',height - margin.bottom);
+    });
+
+    const area = d3.area()
+      .x(point => x(point.km))
+      .y0(y(1000))
+      .y1(point => y(point.elevation))
+      .curve(d3.curveMonotoneX);
+    chart.append('path').datum(allPoints).attr('class','elevation-area').attr('d',area);
+
+    const line = d3.line()
+      .x(point => x(point[0]))
+      .y(point => y(point[1]))
+      .curve(d3.curveMonotoneX);
+    elevationProfileDays.forEach(day => {
+      chart.append('path')
+        .datum(day.points)
+        .attr('class','elevation-day-line')
+        .attr('d',line)
+        .attr('stroke',colors[day.day - 1])
+        .attr('stroke-width',selectedDay === day.day ? 3.6 : 2.3)
+        .attr('opacity',selectedDay <= 6 && selectedDay !== day.day ? .48 : .9);
+    });
+
+    chart.append('rect').attr('class','elevation-profile-frame')
+      .attr('x',margin.left).attr('y',margin.top)
+      .attr('width',plotWidth).attr('height',plotHeight);
+
+    const xTicks = compact ? [0,1000,2000,2382] : [0,500,1000,1500,2000,2382];
+    chart.append('g').attr('class','elevation-axis')
+      .attr('transform','translate(0,' + (height - margin.bottom) + ')')
+      .call(d3.axisBottom(x).tickValues(xTicks).tickFormat(d => d.toLocaleString('zh-CN')));
+    chart.append('text').attr('class','elevation-axis-title')
+      .attr('x',margin.left + plotWidth / 2).attr('y',height - 8)
+      .attr('text-anchor','middle').text('累计主线里程 / km');
+    chart.append('text').attr('class','elevation-axis-title')
+      .attr('transform','rotate(-90)')
+      .attr('x',-(margin.top + plotHeight / 2)).attr('y',14)
+      .attr('text-anchor','middle').text('海拔 / m');
+
+    const stayGroups = chart.selectAll('.elevation-stay')
+      .data(elevationProfileStays)
+      .join('g').attr('class','elevation-stay');
+    stayGroups.append('circle')
+      .attr('class','elevation-stay-dot')
+      .attr('cx',point => x(point.km)).attr('cy',point => y(point.elevation)).attr('r',4.2)
+      .attr('stroke',point => colors[point.day - 1]);
+    stayGroups.append('text')
+      .attr('class','elevation-stay-label')
+      .attr('x',point => x(point.km))
+      .attr('y',height - margin.bottom + 35)
+      .attr('text-anchor',(point,index) => index === 0 ? 'start' : index === elevationProfileStays.length - 1 ? 'end' : 'middle')
+      .text(point => point.name);
+    stayGroups.append('title').text(point => point.name + ' · 约 ' + point.elevation.toLocaleString('zh-CN') + ' m');
+
+    const visiblePeakLabels = compact
+      ? new Set(['祁连山道路高点','当金山隧道群','羊肠子沟','橡皮山'])
+      : new Set(elevationProfilePeaks.map(point => point.name));
+    const peakGroups = chart.selectAll('.elevation-peak')
+      .data(elevationProfilePeaks)
+      .join('g').attr('class','elevation-peak');
+    peakGroups.append('circle')
+      .attr('class','elevation-peak-dot')
+      .attr('cx',point => x(point.km)).attr('cy',point => y(point.elevation)).attr('r',5)
+      .attr('stroke',point => colors[point.day - 1]);
+    peakGroups.filter(point => visiblePeakLabels.has(point.name)).append('text')
+      .attr('class','elevation-peak-label')
+      .attr('x',point => x(point.km) + (compact && point.name === '羊肠子沟' ? -5 : compact && point.name === '橡皮山' ? 5 : 0))
+      .attr('y',point => y(point.elevation) + (compact && point.name === '羊肠子沟' ? 19 : compact && point.name === '橡皮山' ? -24 : -10))
+      .attr('text-anchor',point => compact && ['羊肠子沟','橡皮山'].includes(point.name) ? 'end' : point.km > 2200 ? 'end' : 'middle')
+      .text(point => compact ? point.elevation.toLocaleString('zh-CN') : point.name + ' ' + point.elevation.toLocaleString('zh-CN') + 'm');
+    peakGroups.append('title').text(point => 'D' + point.day + ' · ' + point.name + ' · 约 ' + point.elevation.toLocaleString('zh-CN') + ' m · ' + point.note);
+
+    const hoverGuide = chart.append('line').attr('class','elevation-hover-guide')
+      .attr('y1',margin.top).attr('y2',height - margin.bottom).style('display','none');
+    const hoverDot = chart.append('circle').attr('class','elevation-hover-dot')
+      .attr('r',5).style('display','none');
+    const findPoint = km => {
+      const day = elevationProfileDays.find(item => km >= item.start && km <= item.end) || elevationProfileDays[elevationProfileDays.length - 1];
+      const index = d3.bisector(point => point[0]).right(day.points,km);
+      const left = day.points[Math.max(0,index - 1)];
+      const right = day.points[Math.min(day.points.length - 1,index)];
+      const ratio = right[0] === left[0] ? 0 : (km - left[0]) / (right[0] - left[0]);
+      return {day,elevation:left[1] + ratio * (right[1] - left[1])};
+    };
+    chart.append('rect')
+      .attr('class','elevation-hover-overlay')
+      .attr('x',margin.left).attr('y',margin.top)
+      .attr('width',plotWidth).attr('height',plotHeight)
+      .on('pointermove',event => {
+        const pointer = d3.pointer(event,elevationSvg.node());
+        const pointerX = Math.max(margin.left,Math.min(width - margin.right,pointer[0]));
+        const km = x.invert(pointerX);
+        const found = findPoint(km);
+        const elevation = Math.round(found.elevation);
+        const pointY = y(elevation);
+        hoverGuide.attr('x1',pointerX).attr('x2',pointerX).style('display',null);
+        hoverDot.attr('cx',pointerX).attr('cy',pointY).attr('stroke',colors[found.day.day - 1]).style('display',null);
+        elevationTooltip.hidden = false;
+        elevationTooltip.classList.toggle('is-left',pointerX > width * .72);
+        elevationTooltip.style.left = pointerX + 'px';
+        elevationTooltip.style.top = pointY + 'px';
+        elevationTooltip.innerHTML = '<strong>D' + found.day.day + ' · ' + found.day.from + ' → ' + found.day.to + '</strong><br>累计约 ' + Math.round(km).toLocaleString('zh-CN') + ' km · 海拔约 ' + elevation.toLocaleString('zh-CN') + ' m';
+      })
+      .on('pointerleave',() => {
+        hoverGuide.style('display','none');
+        hoverDot.style('display','none');
+        elevationTooltip.hidden = true;
+      });
+  }
+
   function terrainRangeForBounds(bounds) {
     const values = [];
     for (let y = 0; y <= 6; y += 1) {
@@ -4495,6 +4855,7 @@ html>body{padding:0}</style>
       target.scrollIntoView({behavior:'smooth',block:'start'});
       target.focus({preventScroll:true});
     });
+    renderElevationProfile();
   }
 
   modeToggle.addEventListener('change', () => {
