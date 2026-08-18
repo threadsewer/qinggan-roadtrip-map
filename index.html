@@ -111,7 +111,43 @@
       background:var(--surface);
       box-shadow:var(--shadow);
     }
-    .map-panel svg { display:block; width:100%; height:auto; }
+    .map-stage { position:relative; overflow:hidden; background:var(--surface-2); }
+    .map-panel svg,.day-map { display:block; width:100%; height:auto; cursor:grab; touch-action:none; }
+    .map-panel svg:active,.day-map:active { cursor:grabbing; }
+    .map-tools {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:8px 14px;
+      min-height:45px;
+      padding:7px 10px;
+      border-bottom:1px solid var(--line);
+      background:var(--surface);
+    }
+    .basemap-control { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:12px; font-weight:700; }
+    .basemap-select {
+      max-width:170px;
+      padding:5px 28px 5px 9px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:var(--surface);
+      color:var(--text);
+    }
+    .zoom-controls { display:flex; align-items:center; gap:5px; margin-left:auto; }
+    .map-tool-button {
+      min-width:32px;
+      min-height:30px;
+      padding:3px 8px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:var(--surface);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:750;
+    }
+    .map-tool-button:hover,.map-tool-button:focus-visible { border-color:var(--accent); outline:2px solid var(--accent); outline-offset:1px; }
+    .map-hint { color:var(--muted); font-size:11px; white-space:nowrap; }
     .map-caption {
       display:flex;
       flex-wrap:wrap;
@@ -123,7 +159,7 @@
     }
     .legend-item { display:inline-flex; align-items:center; gap:6px; }
     .legend-line { width:22px; height:3px; border-radius:3px; background:var(--legend); }
-    .overview { margin-bottom:40px; }
+    .overview { margin-bottom:36px; }
     .alert {
       margin:16px 0 0;
       padding:12px 14px;
@@ -167,8 +203,9 @@
     .day-meta { color:var(--muted); font-size:13px; font-weight:650; text-align:right; }
     .day-body { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr); }
     .day-map-wrap { min-width:0; border-right:1px solid var(--line); }
-    .day-map { display:block; width:100%; height:auto; min-height:300px; background:var(--surface-2); }
+    .day-map { min-height:300px; background:var(--surface-2); }
     .day-attribution { margin:0; padding:7px 12px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+    .day-attribution a { color:var(--accent); }
     .day-copy { padding:18px 20px; }
     .quick-line {
       margin:0 0 14px;
@@ -178,6 +215,17 @@
       font-size:13px;
       font-weight:650;
     }
+    .weather-card {
+      margin:0 0 14px;
+      padding:11px 12px;
+      border-left:3px solid var(--accent);
+      border-radius:0 10px 10px 0;
+      background:var(--accent-soft);
+      font-size:12px;
+    }
+    .weather-card.is-alert { border-left-color:var(--warning); background:var(--warning-soft); }
+    .weather-card strong { display:block; margin-bottom:3px; font-size:13px; }
+    .weather-card span { color:var(--muted); }
     .details { display:grid; gap:0; margin:0; }
     .detail-row { display:grid; grid-template-columns:88px minmax(0,1fr); gap:12px; padding:10px 0; border-top:1px solid var(--line); }
     .detail-row:first-child { border-top:0; }
@@ -201,6 +249,51 @@
     .poi-main { fill:var(--day-color); stroke:var(--surface); stroke-width:2; vector-effect:non-scaling-stroke; }
     .poi-candidate { fill:var(--surface); stroke:var(--day-color); stroke-width:2; stroke-dasharray:2 2; vector-effect:non-scaling-stroke; }
     .day-badge { fill:var(--surface); stroke-width:2.5; vector-effect:non-scaling-stroke; }
+    .daily-map-hypsometric { stroke:none; opacity:.92; }
+    .daily-map-contour { fill:none; stroke:color-mix(in srgb,var(--text) 42%,transparent); stroke-width:.55; vector-effect:non-scaling-stroke; }
+    .daily-map-contour.is-major { stroke:color-mix(in srgb,var(--text) 70%,transparent); stroke-width:1.05; }
+    .daily-map-contour-label { fill:var(--text); font-size:9px; font-weight:700; paint-order:stroke; stroke:var(--surface); stroke-width:3px; }
+    .daily-map-raster { opacity:.9; filter:saturate(.62) contrast(.92) brightness(1.06); }
+    .daily-map-texture-veil { fill:var(--surface); opacity:.14; pointer-events:none; }
+    .map-elevation-badge rect { fill:color-mix(in srgb,var(--surface) 86%,transparent); stroke:var(--line); }
+    .map-elevation-badge text { fill:var(--text); font-size:10px; font-weight:700; }
+    .elevation-section { margin:0 0 40px; }
+    .elevation-panel {
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:var(--surface);
+      box-shadow:var(--shadow);
+    }
+    .elevation-stage { position:relative; }
+    .elevation-stage svg { display:block; width:100%; height:auto; }
+    .elevation-caption { margin:0; padding:10px 14px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+    .elevation-tooltip {
+      position:absolute;
+      z-index:5;
+      max-width:240px;
+      padding:7px 9px;
+      transform:translate(10px,calc(-100% - 10px));
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:var(--surface);
+      box-shadow:var(--shadow);
+      color:var(--text);
+      font-size:11px;
+      pointer-events:none;
+    }
+    .elevation-tooltip.is-left { transform:translate(calc(-100% - 10px),calc(-100% - 10px)); }
+    .elevation-grid line { stroke:var(--line); stroke-opacity:.72; }
+    .elevation-grid text,.elevation-axis text { fill:var(--muted); font-size:10px; }
+    .elevation-axis path,.elevation-axis line,.elevation-profile-frame { fill:none; stroke:var(--line); }
+    .elevation-axis-title,.elevation-band-label,.elevation-day-label,.elevation-stay-label,.elevation-peak-label { fill:var(--text); font-size:10px; font-weight:700; }
+    .elevation-band-label { fill:var(--muted); font-size:9px; }
+    .elevation-area { fill:var(--accent); fill-opacity:.08; }
+    .elevation-day-line { fill:none; stroke-linecap:round; stroke-linejoin:round; }
+    .elevation-day-boundary { stroke:var(--line); stroke-dasharray:3 4; }
+    .elevation-stay-dot,.elevation-peak-dot,.elevation-hover-dot { fill:var(--surface); stroke-width:2; }
+    .elevation-hover-guide { stroke:var(--text); stroke-dasharray:3 3; opacity:.55; }
+    .elevation-hover-overlay { fill:transparent; cursor:crosshair; }
     @media (max-width:760px) {
       .shell { width:min(100% - 20px,1180px); }
       .hero { padding:34px 0 24px; }
@@ -211,6 +304,7 @@
       .day-map-wrap { border-right:0; border-bottom:1px solid var(--line); }
       .day-map { min-height:260px; }
       .day-copy { padding:14px; }
+      .map-hint { flex-basis:100%; order:3; }
     }
     @media (max-width:420px) {
       h1 { font-size:38px; }
@@ -242,6 +336,7 @@
   <div class="day-nav-wrap">
     <nav class="shell day-nav" aria-label="快速跳转">
       <a href="#overview">总览</a>
+      <a href="#elevation">海拔</a>
       <a href="#day-1">D1 · 张掖</a>
       <a href="#day-2">D2 · 敦煌</a>
       <a href="#day-3">D3 · 冷湖</a>
@@ -262,13 +357,43 @@
         <p class="section-note">D1–D6 按天分色，虚线是火星一号非铺装段。点击总图上的路线可直接跳到当天。</p>
       </div>
       <div class="map-panel">
-        <svg id="overview-map" role="img" aria-labelledby="overview-map-title overview-map-desc">
-          <title id="overview-map-title">方案 A 全程路线地图</title>
-          <desc id="overview-map-desc">从西宁逆时针经过张掖、敦煌、冷湖、火星一号公路、大柴旦、茶卡和青海湖返回西宁。</desc>
-        </svg>
+        <div class="map-tools">
+          <span class="map-hint">滚轮 / 双指缩放，拖动查看</span>
+          <div class="zoom-controls" aria-label="全程地图缩放">
+            <button class="map-tool-button" type="button" data-zoom-key="overview" data-zoom-action="in" aria-label="放大全程地图">＋</button>
+            <button class="map-tool-button" type="button" data-zoom-key="overview" data-zoom-action="out" aria-label="缩小全程地图">−</button>
+            <button class="map-tool-button" type="button" data-zoom-key="overview" data-zoom-action="reset">复位</button>
+          </div>
+        </div>
+        <div class="map-stage">
+          <svg id="overview-map" role="img" aria-labelledby="overview-map-title overview-map-desc">
+            <title id="overview-map-title">方案 A 全程路线地图</title>
+            <desc id="overview-map-desc">从西宁逆时针经过张掖、敦煌、冷湖、火星一号公路、大柴旦、茶卡和青海湖返回西宁。</desc>
+          </svg>
+        </div>
         <div class="map-caption" id="overview-legend" aria-label="地图图例"></div>
       </div>
       <p class="alert"><strong>执行原则：</strong>火星一号公路以近 24–72 小时天气、路况、轮胎和救援条件为准；保护区、生产区和国道路肩没有合法开放或停车条件就直接跳过。每天出发前仍以高德实时导航和官方交通公告为准。</p>
+    </section>
+
+    <section class="elevation-section" id="elevation" aria-labelledby="elevation-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Elevation profile</p>
+          <h2 id="elevation-title">全程海拔总图</h2>
+        </div>
+        <p class="section-note">主线约 2,382 km，关键节点约 1,090–3,817 m。D5 羊肠子沟和 D6 橡皮山是最容易低估的高点。</p>
+      </div>
+      <div class="elevation-panel">
+        <div class="elevation-stage">
+          <svg id="elevation-chart" role="img" aria-labelledby="elevation-chart-title elevation-chart-desc">
+            <title id="elevation-chart-title">方案 A 全程海拔剖面</title>
+            <desc id="elevation-chart-desc">显示从西宁经张掖、敦煌、冷湖、大柴旦、茶卡返回西宁的主线累计里程和关键海拔变化。</desc>
+          </svg>
+          <div class="elevation-tooltip" id="elevation-tooltip" hidden></div>
+        </div>
+        <p class="elevation-caption">这是按当前主路线关键节点绘制的驾驶高程趋势，不用于判断瞬时坡度；横轴采用每日主线里程，不含市内机动与景点支线。海拔综合 Copernicus DEM 与道路工程资料校正。</p>
+      </div>
     </section>
 
     <section aria-labelledby="days-title">
@@ -290,13 +415,22 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
   <script src="qinggan-offline-roads.js"></script>
   <script src="plan-a-routes.js"></script>
+  <script src="plan-a-basemaps.js"></script>
   <script>
   (() => {
     'use strict';
     const routeData = globalThis.__PLAN_A_ROUTES__ || {};
     const roadData = globalThis.__QINGGAN_OSM_ROAD_DATA__ || {roads:[]};
+    const basemapData = globalThis.__PLAN_A_BASEMAPS__ || {};
+    const terrainGrid = basemapData.terrainGrid || {cols:2,rows:2,lonMin:92.8,lonMax:102,latMin:35.2,latMax:40.9,values:[2000,2000,2000,2000]};
+    const offlineSatellite = basemapData.offlineSatellite || {bounds:[92.8,35.2,102,40.9],imageUrl:'qinggan-satellite.jpg'};
     const colors = ['var(--d1)','var(--d2)','var(--d3)','var(--d4)','var(--d5)','var(--d6)','var(--d7)'];
     const xining = [101.78147,36.62214];
+    const dailyBasemapModes = new Map();
+    const mapZoomStates = new Map();
+    const zoomControllers = new Map();
+    let terrainRenderGrid;
+    let terrainContours;
 
     // 高德路线坐标是 GCJ-02，离线 OpenStreetMap 路网是 WGS84；绘图前统一坐标系。
     function outsideChina([lng,lat]) { return lng < 72.004 || lng > 137.8347 || lat < .8293 || lat > 55.8271; }
@@ -336,6 +470,7 @@
         sights:'七彩丹霞是条件项目；截图中的约 380 km 只到景区，游览后仍要约 45 分钟回张掖市区。',
         energy:'市区先用电；进山区前切山地模式，目标 SOC 约 65%–70%。临近最后高点让到顶电量约 45%–60%，下坡 D 挡回收，进张掖再用电。',
         pet:'丹霞核心区不带狗：一人入园、一人陪狗，或取消入园。',
+        weather:{brief:'小毛毛雨 · 11.5–30.9℃ · 降水概率 43%',detail:'西宁 11.5–27.8℃，张掖 17–30.9℃；模型日降水约 0.5 mm，阵风约 35 km/h。扁都口重点复核降雨、能见度与施工放行。',alert:true},
         pois:[{name:'七彩丹霞',coord:[100.069,38.973],role:'candidate'}]
       },
       {
@@ -347,6 +482,7 @@
         sights:'瓜州大地之子 / 无界短停 30–45 分钟；傍晚鸣沙山核心与后山正规营地只选一个，嘉峪关深游先删。',
         energy:'出城低速先用电；进入高速切高速 + 经济，目标 SOC 约 50%，巡航以 90–100 km/h 为经济区间。低价且不排队的桩才顺路补至约 80%。',
         pet:'只去正规营地并确认宠物、停车和价格；炎热时绝不把狗单独留车。',
+        weather:{brief:'阴 · 18–35.9℃ · 降水概率 22%',detail:'张掖 18–31.9℃，敦煌 22.5–35.9℃；模型日降水 0 mm，阵风约 30 km/h。重点防河西走廊横风、扬尘与暴晒。',alert:false},
         pois:[{name:'大地之子',coord:[95.772,40.519],role:'main'},{name:'鸣沙山后山营地',coord:[94.620094,40.080892],role:'candidate'}]
       },
       {
@@ -358,6 +494,7 @@
         sights:'阿克塞以补给为主；苏干湖保护区不对外开放，只在明确开放公共点远观；黑独山只走官方游客中心和摆渡。',
         energy:'敦煌满油、SOC 最好 80% 以上出发；长爬坡前切山地 65%–70%，到顶争取剩 45%–60%。到冷湖至少保留 50%–60% 给次日偏远段。',
         pet:'黑独山核心摆渡大概率不接纳宠物，提前安排一人陪狗，否则取消。保护区不放狗、不越栏。',
+        weather:{brief:'大部晴 · 11.8–36.8℃ · 降水概率 14%',detail:'敦煌 19.7–36.8℃，冷湖 11.8–26.1℃；模型日降水 0 mm，阵风约 36 km/h。跨当金山温差大，敦煌段注意高温。',alert:true},
         pois:[{name:'阿克塞石油小镇',coord:[94.323,39.512],role:'main'},{name:'苏干湖外沿',coord:[93.90559,38.899416],role:'candidate'},{name:'黑独山官方入口',coord:[93.401038,38.812435],role:'candidate'}]
       },
       {
@@ -369,6 +506,7 @@
         sights:'火星一号公路是唯一主项目。东行顺序为东台 → G315 K780 U 型公路 → 大柴旦；东台无开放入口就跳过，U 型公路无合法港湾就只通过。',
         energy:'冷湖满油、SOC 65%–75% 出发；火星段用山地 65%–70% + 舒适 / 中等回收，SOC 底线守在 40%–50%。回到铺装 G315 后切高速 / 经济。',
         pet:'高温和长日下增加饮水与短暂下车活动；任何时候都不把狗单独留在熄火车辆中。',
+        weather:{brief:'阴 · 12.6–23.7℃ · 阵风约 49 km/h',detail:'冷湖 15.6–23℃，大柴旦 12.6–23.7℃；降水概率约 10%，模型日降水 0 mm。火星段虽低降水，仍须重点复核强风、近 24–72 小时降雨和路面。',alert:true},
         pois:[{name:'火星公路',coord:[93.286,38.333],role:'main'},{name:'东台沿线',coord:[94.021832,37.491533],role:'candidate'},{name:'G315 K780',coord:[94.965896,37.389371],role:'candidate'}]
       },
       {
@@ -380,6 +518,7 @@
         sights:'早上可去翡翠湖 1.5–2 小时，否则直达茶卡；若当天再进茶卡盐湖，则与翡翠湖二选一。',
         energy:'高原高速用高速 + 经济约 50%，平路标准 / 中等回收并尽量滑行；羊肠子沟爬坡前临时切山地并保电 60%–65%。茶卡有可靠充电时补至 80%–100%。',
         pet:'茶卡住宿需重新书面确认具体日期、房型、费用和停车；景区宠物规则当天再核。',
+        weather:{brief:'阴 / 毛毛雨 · 12.2–21.7℃ · 降水概率 36%',detail:'大柴旦 15.3–21.4℃，茶卡 12.2–21.7℃；模型日降水约 4.5 mm，阵风约 37 km/h。高原长直路和施工段都要留余量。',alert:true},
         pois:[{name:'大柴旦翡翠湖',coord:[95.163,37.777],role:'candidate'}]
       },
       {
@@ -391,6 +530,7 @@
         sights:'经黑马河 / 青海湖回西宁；茶卡盐湖若前日没去，只能与青海湖二选一。东格尔仅作天气和时点都合适时的顺路候选。',
         energy:'茶卡出发用山地 65%–70% 翻橡皮山，到顶控制在 45%–55%。湖边低速可用电，但接近日月山前恢复到 55%–65%；长下坡留足回收空间。',
         pet:'湖边风大温低，短停活动并及时补水；二郎剑等核心景区不默认允许带狗。',
+        weather:{brief:'雷暴 / 冰雹风险 · 13.2–24.8℃ · 降水概率 83%',detail:'茶卡 13.2–23.2℃，黑马河 14.9–18℃，西宁 16.8–24.8℃；模型日降水最高约 33 mm，阵风约 47 km/h。48 小时预报仍维持则不绕湖，直接回西宁。',alert:true},
         pois:[{name:'黑马河西岸',coord:[99.699,36.720],role:'main'},{name:'东格尔观景台',coord:[99.69985,36.85252],role:'candidate'}]
       },
       {
@@ -402,6 +542,7 @@
         sights:'不排景点，按还车与离开时间执行。',
         energy:'城市 / 纯电优先，保留约 20% 安全余量；按订单把 92 号油加到约定刻度，不为还车额外绕路快充。',
         pet:'退房前清理宠物毛发，检查牵引绳、饮水器和车内遗留物。',
+        weather:{brief:'毛毛雨 · 15.3–22.3℃ · 降水概率 61%',detail:'西宁 15.3–22.3℃；模型日降水约 11.1 mm，阵风约 49 km/h。还车前晚复核降雨、早高峰、洗车和补油时间。',alert:true},
         pois:[]
       }
     ];
@@ -416,6 +557,34 @@
       {name:'大柴旦',coord:[95.36122,37.849],dx:8,dy:16},
       {name:'茶卡',coord:[99.16071,36.72394],dx:-30,dy:16},
       {name:'黑马河',coord:[99.699,36.720],dx:-8,dy:-9}
+    ];
+
+    const elevationProfileDays = [
+      {day:1,date:'8/20',from:'西宁',to:'张掖',start:0,end:417,points:[[0,2254],[69.3,3022],[98.7,2803],[164.3,3396],[214.7,3640],[258.3,2487],[314.8,1609],[341.9,1488],[380.1,1721],[417,1480]]},
+      {day:2,date:'8/21',from:'张掖',to:'敦煌',start:417,end:1007,points:[[417,1480],[496.1,1400],[545.6,1673],[605.5,1451],[677.4,1904],[784.9,1407],[921.4,1134],[981.7,1092],[1007,1140]]},
+      {day:3,date:'8/22',from:'敦煌',to:'冷湖',start:1007,end:1284,points:[[1007,1140],[1052.7,1455],[1098.4,1932],[1121.3,2423],[1165.1,3340],[1182.3,2861],[1249.5,2904],[1284,2779]]},
+      {day:4,date:'8/23',from:'冷湖',to:'大柴旦',start:1284,end:1684,points:[[1284,2779],[1361.8,2829],[1372.7,2688],[1437.8,2752],[1552.8,2705],[1620,3249],[1661.3,3420],[1684,3182]]},
+      {day:5,date:'8/24',from:'大柴旦',to:'茶卡',start:1684,end:2080,points:[[1684,3182],[1698.3,3289],[1756.8,3321],[1783.2,3784],[1839,2854],[1916.9,2836],[1990.7,3010],[2034.1,3291],[2080,3060]]},
+      {day:6,date:'8/25',from:'茶卡',to:'西宁',start:2080,end:2382,points:[[2080,3060],[2085,3127],[2134.5,3817],[2152.2,3217],[2224.4,3234],[2273.1,3380],[2293.1,3374],[2320.7,2995],[2344.8,2540],[2382,2254]]}
+    ];
+
+    const elevationProfileStays = [
+      {km:0,elevation:2254,name:'西宁',day:1},
+      {km:417,elevation:1480,name:'张掖',day:1},
+      {km:1007,elevation:1140,name:'敦煌',day:2},
+      {km:1284,elevation:2779,name:'冷湖',day:3},
+      {km:1684,elevation:3182,name:'大柴旦',day:4},
+      {km:2080,elevation:3060,name:'茶卡',day:5},
+      {km:2382,elevation:2254,name:'西宁',day:6}
+    ];
+
+    const elevationProfilePeaks = [
+      {km:214.7,elevation:3640,name:'祁连山道路高点',day:1,note:'坡前建议保电 65%–70%'},
+      {km:1165.1,elevation:3340,name:'当金山隧道群',day:3,note:'现行 G3011 约 3300–3400 m'},
+      {km:1661.3,elevation:3420,name:'G315 高点',day:4,note:'接近大柴旦的铺装段，不是火星土路'},
+      {km:1783.2,elevation:3784,name:'羊肠子沟',day:5,note:'D5 隐蔽大爬升，坡前切山地保电'},
+      {km:2134.5,elevation:3817,name:'橡皮山',day:6,note:'全程最高点；到顶建议留 45%–55%'},
+      {km:2273.1,elevation:3380,name:'日月山高速段',day:6,note:'随后长下坡，给回收留空间'}
     ];
 
     const roadKinds = new Set(['motorway','trunk','primary','secondary','tertiary']);
@@ -462,14 +631,150 @@
       return d3.geoMercator().fitExtent([[pad,pad],[width - pad,height - pad]],boundsFeature(bounds));
     }
 
+    function upsampleTerrainGrid(grid,factor) {
+      const cols = (grid.cols - 1) * factor + 1;
+      const rows = (grid.rows - 1) * factor + 1;
+      const values = [];
+      const valueAt = (x,y) => grid.values[Math.max(0,Math.min(grid.rows - 1,y)) * grid.cols + Math.max(0,Math.min(grid.cols - 1,x))];
+      for (let y = 0; y < rows; y += 1) {
+        const sourceY = y / factor;
+        const y0 = Math.floor(sourceY);
+        const y1 = Math.min(grid.rows - 1,y0 + 1);
+        const ty = sourceY - y0;
+        for (let x = 0; x < cols; x += 1) {
+          const sourceX = x / factor;
+          const x0 = Math.floor(sourceX);
+          const x1 = Math.min(grid.cols - 1,x0 + 1);
+          const tx = sourceX - x0;
+          const top = valueAt(x0,y0) * (1 - tx) + valueAt(x1,y0) * tx;
+          const bottom = valueAt(x0,y1) * (1 - tx) + valueAt(x1,y1) * tx;
+          values.push(Math.round(top * (1 - ty) + bottom * ty));
+        }
+      }
+      return {...grid,cols,rows,values};
+    }
+
+    function ensureTerrainContours() {
+      if (terrainRenderGrid && terrainContours) return;
+      terrainRenderGrid = upsampleTerrainGrid(terrainGrid,2);
+      terrainContours = d3.contours()
+        .size([terrainRenderGrid.cols,terrainRenderGrid.rows])
+        .thresholds(d3.range(0,6001,250))
+        .smooth(true)(terrainRenderGrid.values);
+    }
+
+    function terrainCoordinate(point) {
+      ensureTerrainContours();
+      return [
+        terrainRenderGrid.lonMin + point[0] / (terrainRenderGrid.cols - 1) * (terrainRenderGrid.lonMax - terrainRenderGrid.lonMin),
+        terrainRenderGrid.latMax - point[1] / (terrainRenderGrid.rows - 1) * (terrainRenderGrid.latMax - terrainRenderGrid.latMin)
+      ];
+    }
+
+    function terrainElevationAt(coord) {
+      ensureTerrainContours();
+      const x = Math.max(0,Math.min(terrainRenderGrid.cols - 1,(coord[0] - terrainRenderGrid.lonMin) / (terrainRenderGrid.lonMax - terrainRenderGrid.lonMin) * (terrainRenderGrid.cols - 1)));
+      const y = Math.max(0,Math.min(terrainRenderGrid.rows - 1,(terrainRenderGrid.latMax - coord[1]) / (terrainRenderGrid.latMax - terrainRenderGrid.latMin) * (terrainRenderGrid.rows - 1)));
+      const x0 = Math.floor(x);
+      const x1 = Math.min(terrainRenderGrid.cols - 1,x0 + 1);
+      const y0 = Math.floor(y);
+      const y1 = Math.min(terrainRenderGrid.rows - 1,y0 + 1);
+      const tx = x - x0;
+      const ty = y - y0;
+      const at = (column,row) => terrainRenderGrid.values[row * terrainRenderGrid.cols + column];
+      const top = at(x0,y0) * (1 - tx) + at(x1,y0) * tx;
+      const bottom = at(x0,y1) * (1 - tx) + at(x1,y1) * tx;
+      return top * (1 - ty) + bottom * ty;
+    }
+
+    function terrainRangeForBounds(bounds) {
+      const values = [];
+      for (let y = 0; y <= 6; y += 1) {
+        for (let x = 0; x <= 10; x += 1) {
+          values.push(terrainElevationAt([
+            bounds[0][0] + x / 10 * (bounds[1][0] - bounds[0][0]),
+            bounds[0][1] + y / 6 * (bounds[1][1] - bounds[0][1])
+          ]));
+        }
+      }
+      return [Math.floor(d3.min(values) / 50) * 50,Math.ceil(d3.max(values) / 50) * 50];
+    }
+
+    function hypsometricColor(value) {
+      if (value < 1500) return '#9db37e';
+      if (value < 2500) return '#b9b67b';
+      if (value < 3500) return '#c6aa78';
+      if (value < 4500) return '#b49b83';
+      if (value < 5250) return '#c4c0ad';
+      return '#e1ded0';
+    }
+
+    function appendTerrainSurface(group,projection,showContours) {
+      ensureTerrainContours();
+      const contourProjection = d3.geoTransform({
+        point(x,y) {
+          const projected = projection(terrainCoordinate([x,y]));
+          this.stream.point(projected[0],projected[1]);
+        }
+      });
+      const contourPath = d3.geoPath(contourProjection);
+      const layer = group.append('g').attr('class','terrain-layer');
+      layer.selectAll('path.daily-map-hypsometric')
+        .data(terrainContours.filter(contour => contour.value % 500 === 0))
+        .join('path')
+        .attr('class','daily-map-hypsometric')
+        .attr('fill',contour => hypsometricColor(contour.value))
+        .attr('d',contourPath);
+      if (!showContours) return;
+      layer.selectAll('path.daily-map-contour')
+        .data(terrainContours)
+        .join('path')
+        .attr('class',contour => 'daily-map-contour' + (contour.value % 1000 === 0 ? ' is-major' : ''))
+        .attr('d',contourPath)
+        .append('title').text(contour => contour.value + ' m 等高线');
+    }
+
+    function appendOfflineSatellite(group,projection) {
+      const [west,south,east,north] = offlineSatellite.bounds;
+      const northwest = projection([west,north]);
+      const southeast = projection([east,south]);
+      const layer = group.append('g').attr('class','satellite-layer');
+      layer.append('image')
+        .attr('class','daily-map-raster')
+        .attr('x',northwest[0]).attr('y',northwest[1])
+        .attr('width',Math.max(1,southeast[0] - northwest[0]))
+        .attr('height',Math.max(1,southeast[1] - northwest[1]))
+        .attr('preserveAspectRatio','none')
+        .attr('href',offlineSatellite.imageUrl);
+      layer.append('rect').attr('class','daily-map-texture-veil')
+        .attr('x',northwest[0]).attr('y',northwest[1])
+        .attr('width',Math.max(1,southeast[0] - northwest[0]))
+        .attr('height',Math.max(1,southeast[1] - northwest[1]));
+    }
+
+    function appendElevationBadge(svg,elevationRange) {
+      const group = svg.append('g').attr('class','map-elevation-badge').attr('transform','translate(12,12)');
+      group.append('rect').attr('width',174).attr('height',26).attr('rx',7);
+      group.append('text').attr('x',9).attr('y',17)
+        .text('当前图幅约 ' + elevationRange[0] + '–' + elevationRange[1] + ' m');
+    }
+
+    function dailyMapAttribution(mode,elevationRange) {
+      const altitude = '图幅海拔约 ' + elevationRange[0] + '–' + elevationRange[1] + ' m。';
+      const roadsSource = '道路：<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors / ODbL</a>，离线快照。';
+      const terrainSource = '高程：<a href="https://www.opentopodata.org/api/" target="_blank" rel="noopener noreferrer">OpenTopoData / SRTM90m</a>，约 9–12 km 采样后插值' + (mode === 'terrain' ? '；等高线间隔 250 m。' : '。');
+      const satelliteSource = '影像：<a href="https://visibleearth.nasa.gov/collection/1484/planet-textures" target="_blank" rel="noopener noreferrer">NASA Blue Marble</a>，离线柔化影像。';
+      return [altitude,mode === 'roads' ? roadsSource : '',mode !== 'satellite' ? terrainSource : satelliteSource,'路线点已近似转换至 WGS84；实际驾驶仍以当天高德导航为准。'].filter(Boolean).join(' ');
+    }
+
     function drawRoads(group,projection,bounds,totalMap) {
       const line = d3.line().x(point => projection(point)[0]).y(point => projection(point)[1]);
       const allowed = totalMap ? new Set(['motorway','trunk','primary']) : roadKinds;
-      group.selectAll('path')
-        .data(roads.filter(road => allowed.has(road.c) && boundsIntersect(road.bounds,bounds)))
-        .join('path')
-        .attr('class',road => 'road road-' + road.c)
-        .attr('d',road => line(road.p));
+      const visible = roads.filter(road => allowed.has(road.c) && boundsIntersect(road.bounds,bounds));
+      ['tertiary','secondary','primary','trunk','motorway'].forEach(kind => {
+        const paths = visible.filter(road => road.c === kind).map(road => line(road.p)).filter(Boolean);
+        if (paths.length) group.append('path').attr('class','road road-' + kind).attr('d',paths.join(''));
+      });
     }
 
     function addRoute(group,points,projection,color,isMars,extraClass) {
@@ -484,12 +789,35 @@
 
     function addLabel(group,projection,item,options = {}) {
       const point = projection(toWgs(item.coord));
-      group.append('circle').attr('class',options.circleClass || 'stop-dot')
-        .attr('cx',point[0]).attr('cy',point[1]).attr('r',options.radius || 4)
+      const anchor = group.append('g').datum({base:point}).attr('class','map-anchor')
+        .attr('transform',`translate(${point[0]},${point[1]})`);
+      anchor.append('circle').attr('class',options.circleClass || 'stop-dot')
+        .attr('cx',0).attr('cy',0).attr('r',options.radius || 4)
         .style('--day-color',options.color || 'var(--text)');
-      group.append('text').attr('class',options.labelClass || 'map-label')
-        .attr('x',point[0] + (item.dx ?? 8)).attr('y',point[1] + (item.dy ?? -8))
+      anchor.append('text').attr('class',options.labelClass || 'map-label')
+        .attr('x',item.dx ?? 8).attr('y',item.dy ?? -8)
         .attr('text-anchor',item.anchor || 'start').text(item.name);
+      return anchor;
+    }
+
+    function enableMapZoom(svg,geometry,anchors,key,width,height) {
+      const applyTransform = transform => {
+        geometry.attr('transform',transform);
+        anchors.selectAll('.map-anchor').attr('transform',datum => {
+          const point = transform.apply(datum.base);
+          return `translate(${point[0]},${point[1]})`;
+        });
+        mapZoomStates.set(key,transform);
+      };
+      const zoom = d3.zoom()
+        .scaleExtent([1,8])
+        .extent([[0,0],[width,height]])
+        .translateExtent([[0,0],[width,height]])
+        .clickDistance(4)
+        .on('zoom',event => applyTransform(event.transform));
+      svg.call(zoom).on('dblclick.zoom',null);
+      zoomControllers.set(key,{svg,zoom});
+      svg.call(zoom.transform,mapZoomStates.get(key) || d3.zoomIdentity);
     }
 
     function drawOverview() {
@@ -503,10 +831,12 @@
       const clipId = 'overview-clip';
       svg.append('defs').append('clipPath').attr('id',clipId).append('rect').attr('width',width).attr('height',height);
       const clipped = svg.append('g').attr('clip-path',`url(#${clipId})`);
-      drawRoads(clipped.append('g'),projection,bounds,true);
+      const geometry = clipped.append('g').attr('class','map-geometry');
+      const anchors = clipped.append('g').attr('class','map-anchors');
+      drawRoads(geometry.append('g'),projection,bounds,true);
 
       days.slice(0,6).forEach(day => {
-        const routeGroup = clipped.append('g');
+        const routeGroup = geometry.append('g');
         day.segments.forEach(key => {
           const visible = addRoute(routeGroup,routeData[key] || [],projection,colors[day.day - 1],key === 'mars','overview-route');
           visible?.on('click',() => document.getElementById('day-' + day.day)?.scrollIntoView({behavior:'smooth'}));
@@ -515,15 +845,16 @@
         const mid = points[Math.floor(points.length / 2)];
         if (mid) {
           const p = projection(toWgs(mid));
-          const badge = svg.append('g').attr('role','link').attr('aria-label','跳到第 ' + day.day + ' 天').style('cursor','pointer')
+          const badge = anchors.append('g').datum({base:p}).attr('class','map-anchor').attr('transform',`translate(${p[0]},${p[1]})`)
+            .attr('role','link').attr('aria-label','跳到第 ' + day.day + ' 天').style('cursor','pointer')
             .on('click',() => document.getElementById('day-' + day.day)?.scrollIntoView({behavior:'smooth'}));
-          badge.append('circle').attr('class','day-badge').attr('cx',p[0]).attr('cy',p[1]).attr('r',11).attr('stroke',colors[day.day - 1]);
-          badge.append('text').attr('class','day-badge-text').attr('x',p[0]).attr('y',p[1] + 4).attr('text-anchor','middle').text(day.day);
+          badge.append('circle').attr('class','day-badge').attr('r',11).attr('stroke',colors[day.day - 1]);
+          badge.append('text').attr('class','day-badge-text').attr('y',4).attr('text-anchor','middle').text(day.day);
         }
       });
-      const labels = svg.append('g');
-      overviewStops.forEach(stop => addLabel(labels,projection,stop));
+      overviewStops.forEach(stop => addLabel(anchors,projection,stop));
       svg.append('text').attr('class','map-note-label').attr('x',16).attr('y',height - 12).text('灰色：OpenStreetMap 路网 · 彩色：方案 A 每日路线');
+      enableMapZoom(svg,geometry,anchors,'overview',width,height);
     }
 
     function drawDayMap(svgNode,day) {
@@ -537,26 +868,36 @@
       const all = (points.length ? points.concat(day.pois.map(poi => poi.coord)) : [xining,[101.66,36.56],[101.90,36.70]]).map(toWgs);
       const bounds = paddedBounds(all,day.day === 4 ? .06 : .11,day.day === 7 ? .08 : .05);
       const projection = projectionFor(bounds,width,height,width < 520 ? 18 : 24);
+      const mode = dailyBasemapModes.get(day.day) || 'roads';
+      dailyBasemapModes.set(day.day,mode);
+      const elevationRange = terrainRangeForBounds(bounds);
       const clipId = 'day-' + day.day + '-clip';
       svg.append('defs').append('clipPath').attr('id',clipId).append('rect').attr('width',width).attr('height',height);
       const clipped = svg.append('g').attr('clip-path',`url(#${clipId})`);
-      drawRoads(clipped.append('g'),projection,bounds,false);
-      const routeGroup = clipped.append('g');
+      const geometry = clipped.append('g').attr('class','map-geometry');
+      const anchors = clipped.append('g').attr('class','map-anchors');
+      if (mode === 'satellite') appendOfflineSatellite(geometry,projection);
+      if (mode !== 'satellite') appendTerrainSurface(geometry,projection,mode === 'terrain');
+      if (mode === 'roads') drawRoads(geometry.append('g'),projection,bounds,false);
+      const routeGroup = geometry.append('g');
       day.segments.forEach(key => addRoute(routeGroup,routeData[key] || [],projection,colors[day.day - 1],key === 'mars'));
 
-      const labels = svg.append('g');
       if (points.length) {
-        addLabel(labels,projection,{name:day.from,coord:points[0],dx:8,dy:-9},{color:colors[day.day - 1]});
-        addLabel(labels,projection,{name:day.to,coord:points[points.length - 1],dx:8,dy:16},{color:colors[day.day - 1]});
+        addLabel(anchors,projection,{name:day.from,coord:points[0],dx:8,dy:-9},{color:colors[day.day - 1]});
+        addLabel(anchors,projection,{name:day.to,coord:points[points.length - 1],dx:8,dy:16},{color:colors[day.day - 1]});
       } else {
-        addLabel(labels,projection,{name:'西宁市区',coord:xining,dx:8,dy:-9},{color:colors[6],radius:6});
+        addLabel(anchors,projection,{name:'西宁市区',coord:xining,dx:8,dy:-9},{color:colors[6],radius:6});
       }
-      day.pois.forEach((poi,index) => addLabel(labels,projection,{
+      day.pois.forEach((poi,index) => addLabel(anchors,projection,{
         ...poi,dx:index % 2 ? -8 : 8,dy:index % 2 ? 16 : -9,anchor:index % 2 ? 'end' : 'start'
       },{
         circleClass:poi.role === 'main' ? 'poi-main' : 'poi-candidate',
         color:colors[day.day - 1],radius:poi.role === 'main' ? 6 : 5
       }));
+      appendElevationBadge(svg,elevationRange);
+      enableMapZoom(svg,geometry,anchors,'day-' + day.day,width,height);
+      const attribution = document.querySelector(`.day-attribution[data-day="${day.day}"]`);
+      if (attribution) attribution.innerHTML = dailyMapAttribution(mode,elevationRange);
     }
 
     function row(label,value) {
@@ -573,9 +914,31 @@
             <div class="day-meta">${day.baseline}</div>
           </header>
           <div class="day-body">
-            <div class="day-map-wrap"><svg class="day-map" data-day="${day.day}" role="img"></svg><p class="day-attribution">路线为规划采样；路网 © OpenStreetMap contributors（2026-08-11 离线快照）</p></div>
+            <div class="day-map-wrap">
+              <div class="map-tools">
+                <label class="basemap-control">底图
+                  <select class="basemap-select" data-day="${day.day}" aria-label="D${day.day} 地图背景">
+                    <option value="roads">灰度路网</option>
+                    <option value="terrain">等高地形</option>
+                    <option value="satellite">柔化卫星</option>
+                  </select>
+                </label>
+                <div class="zoom-controls" aria-label="D${day.day} 地图缩放">
+                  <button class="map-tool-button" type="button" data-zoom-key="day-${day.day}" data-zoom-action="in" aria-label="放大 D${day.day} 地图">＋</button>
+                  <button class="map-tool-button" type="button" data-zoom-key="day-${day.day}" data-zoom-action="out" aria-label="缩小 D${day.day} 地图">−</button>
+                  <button class="map-tool-button" type="button" data-zoom-key="day-${day.day}" data-zoom-action="reset">复位</button>
+                </div>
+                <span class="map-hint">滚轮 / 双指缩放，拖动查看</span>
+              </div>
+              <div class="map-stage"><svg class="day-map" data-day="${day.day}" role="img"></svg></div>
+              <p class="day-attribution" data-day="${day.day}"></p>
+            </div>
             <div class="day-copy">
               <p class="quick-line">${day.total} · ${day.depart}</p>
+              <div class="weather-card${day.weather.alert ? ' is-alert' : ''}">
+                <strong>${day.weather.brief}</strong>
+                <span>${day.weather.detail}<br>Open-Meteo 2026-08-17 趋势快照；临近出发再刷新。</span>
+              </div>
               <dl class="details">
                 ${row('道路',day.roads)}
                 ${row('收费',day.toll)}
@@ -589,7 +952,145 @@
             </div>
           </div>
         </article>`).join('');
-      list.querySelectorAll('.day-map').forEach(node => drawDayMap(node,days[Number(node.dataset.day) - 1]));
+      list.querySelectorAll('.basemap-select').forEach(select => {
+        const dayNumber = Number(select.dataset.day);
+        const mode = dailyBasemapModes.get(dayNumber) || 'roads';
+        dailyBasemapModes.set(dayNumber,mode);
+        select.value = mode;
+        select.addEventListener('change',() => {
+          dailyBasemapModes.set(dayNumber,select.value);
+          const map = list.querySelector(`.day-map[data-day="${dayNumber}"]`);
+          if (map) drawDayMap(map,days[dayNumber - 1]);
+        });
+      });
+    }
+
+    function bindMapTools() {
+      document.querySelectorAll('[data-zoom-key][data-zoom-action]').forEach(button => {
+        button.onclick = () => {
+          const controller = zoomControllers.get(button.dataset.zoomKey);
+          if (!controller) return;
+          if (button.dataset.zoomAction === 'in') controller.svg.call(controller.zoom.scaleBy,1.5);
+          if (button.dataset.zoomAction === 'out') controller.svg.call(controller.zoom.scaleBy,1 / 1.5);
+          if (button.dataset.zoomAction === 'reset') controller.svg.call(controller.zoom.transform,d3.zoomIdentity);
+        };
+      });
+    }
+
+    function renderElevationProfile() {
+      const node = document.getElementById('elevation-chart');
+      const stage = node.parentElement;
+      const tooltip = document.getElementById('elevation-tooltip');
+      const width = Math.max(320,Math.floor(stage.getBoundingClientRect().width || 900));
+      const compact = width < 520;
+      const height = compact ? 330 : 376;
+      const margin = compact ? {top:44,right:10,bottom:66,left:52} : {top:48,right:22,bottom:70,left:64};
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const x = d3.scaleLinear().domain([0,2382]).range([margin.left,width - margin.right]);
+      const y = d3.scaleLinear().domain([1000,4000]).range([height - margin.bottom,margin.top]);
+      const svg = d3.select(node).attr('viewBox',`0 0 ${width} ${height}`);
+      svg.selectAll('.elevation-rendered').remove();
+      const chart = svg.append('g').attr('class','elevation-rendered');
+
+      chart.append('rect').attr('x',margin.left).attr('y',y(3500)).attr('width',plotWidth)
+        .attr('height',y(3000) - y(3500)).attr('fill','var(--warning)').attr('fill-opacity',.08);
+      chart.append('rect').attr('x',margin.left).attr('y',margin.top).attr('width',plotWidth)
+        .attr('height',y(3500) - margin.top).attr('fill','var(--warning)').attr('fill-opacity',.14);
+      chart.append('text').attr('class','elevation-band-label').attr('x',margin.left + 6).attr('y',y(3500) - 5).text('≥ 3,500 m');
+      chart.append('text').attr('class','elevation-band-label').attr('x',margin.left + 6).attr('y',y(3000) - 5).text('≥ 3,000 m');
+
+      const grid = chart.append('g').attr('class','elevation-grid').attr('transform',`translate(${margin.left},0)`)
+        .call(d3.axisLeft(y).tickValues([1000,2000,3000,3500,4000]).tickSize(-plotWidth).tickFormat(value => value.toLocaleString('zh-CN')));
+      grid.select('.domain').remove();
+
+      elevationProfileDays.forEach(day => {
+        chart.append('rect').attr('x',x(day.start)).attr('y',margin.top)
+          .attr('width',Math.max(0,x(day.end) - x(day.start))).attr('height',plotHeight)
+          .attr('fill',colors[day.day - 1]).attr('fill-opacity',.025);
+        chart.append('text').attr('class','elevation-day-label')
+          .attr('x',(x(day.start) + x(day.end)) / 2).attr('y',margin.top - 20)
+          .attr('text-anchor','middle').attr('fill',colors[day.day - 1])
+          .text(compact ? `D${day.day}` : `D${day.day} · ${day.date}`);
+        chart.append('line').attr('class','elevation-day-boundary')
+          .attr('x1',x(day.end)).attr('x2',x(day.end)).attr('y1',margin.top).attr('y2',height - margin.bottom);
+      });
+
+      const allPoints = elevationProfileDays.flatMap((day,index) => day.points.slice(index ? 1 : 0).map(point => ({km:point[0],elevation:point[1]})));
+      const area = d3.area().x(point => x(point.km)).y0(y(1000)).y1(point => y(point.elevation)).curve(d3.curveMonotoneX);
+      chart.append('path').datum(allPoints).attr('class','elevation-area').attr('d',area);
+      const line = d3.line().x(point => x(point[0])).y(point => y(point[1])).curve(d3.curveMonotoneX);
+      elevationProfileDays.forEach(day => {
+        chart.append('path').datum(day.points).attr('class','elevation-day-line').attr('d',line)
+          .attr('stroke',colors[day.day - 1]).attr('stroke-width',2.6).attr('opacity',.94);
+      });
+
+      chart.append('rect').attr('class','elevation-profile-frame')
+        .attr('x',margin.left).attr('y',margin.top).attr('width',plotWidth).attr('height',plotHeight);
+      const xTicks = compact ? [0,1000,2000,2382] : [0,500,1000,1500,2000,2382];
+      chart.append('g').attr('class','elevation-axis').attr('transform',`translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(x).tickValues(xTicks).tickFormat(value => value.toLocaleString('zh-CN')));
+      chart.append('text').attr('class','elevation-axis-title').attr('x',margin.left + plotWidth / 2).attr('y',height - 10)
+        .attr('text-anchor','middle').text('累计主线里程 / km');
+      chart.append('text').attr('class','elevation-axis-title').attr('transform','rotate(-90)')
+        .attr('x',-(margin.top + plotHeight / 2)).attr('y',15).attr('text-anchor','middle').text('海拔 / m');
+
+      const stayGroups = chart.selectAll('.elevation-stay').data(elevationProfileStays).join('g').attr('class','elevation-stay');
+      stayGroups.append('circle').attr('class','elevation-stay-dot')
+        .attr('cx',point => x(point.km)).attr('cy',point => y(point.elevation)).attr('r',4.2)
+        .attr('stroke',point => colors[point.day - 1]);
+      stayGroups.append('text').attr('class','elevation-stay-label')
+        .attr('x',point => x(point.km)).attr('y',height - margin.bottom + 36)
+        .attr('text-anchor',(point,index) => index === 0 ? 'start' : index === elevationProfileStays.length - 1 ? 'end' : 'middle')
+        .text(point => point.name);
+      stayGroups.append('title').text(point => `${point.name} · 约 ${point.elevation.toLocaleString('zh-CN')} m`);
+
+      const visibleCompactPeaks = new Set(['祁连山道路高点','当金山隧道群','羊肠子沟','橡皮山']);
+      const peakGroups = chart.selectAll('.elevation-peak').data(elevationProfilePeaks).join('g').attr('class','elevation-peak');
+      peakGroups.append('circle').attr('class','elevation-peak-dot')
+        .attr('cx',point => x(point.km)).attr('cy',point => y(point.elevation)).attr('r',5)
+        .attr('stroke',point => colors[point.day - 1]);
+      peakGroups.filter(point => !compact || visibleCompactPeaks.has(point.name)).append('text')
+        .attr('class','elevation-peak-label')
+        .attr('x',point => x(point.km) + (compact && point.name === '羊肠子沟' ? -5 : 0))
+        .attr('y',point => y(point.elevation) + (compact && point.name === '羊肠子沟' ? 20 : -10))
+        .attr('text-anchor',point => point.km > 2200 || compact && point.name === '羊肠子沟' ? 'end' : 'middle')
+        .text(point => compact ? point.elevation.toLocaleString('zh-CN') : `${point.name} ${point.elevation.toLocaleString('zh-CN')}m`);
+      peakGroups.append('title').text(point => `D${point.day} · ${point.name} · 约 ${point.elevation.toLocaleString('zh-CN')} m · ${point.note}`);
+
+      const hoverGuide = chart.append('line').attr('class','elevation-hover-guide')
+        .attr('y1',margin.top).attr('y2',height - margin.bottom).style('display','none');
+      const hoverDot = chart.append('circle').attr('class','elevation-hover-dot').attr('r',5).style('display','none');
+      const findPoint = km => {
+        const day = elevationProfileDays.find(item => km >= item.start && km <= item.end) || elevationProfileDays[elevationProfileDays.length - 1];
+        const index = d3.bisector(point => point[0]).right(day.points,km);
+        const left = day.points[Math.max(0,index - 1)];
+        const right = day.points[Math.min(day.points.length - 1,index)];
+        const ratio = right[0] === left[0] ? 0 : (km - left[0]) / (right[0] - left[0]);
+        return {day,elevation:left[1] + ratio * (right[1] - left[1])};
+      };
+      chart.append('rect').attr('class','elevation-hover-overlay')
+        .attr('x',margin.left).attr('y',margin.top).attr('width',plotWidth).attr('height',plotHeight)
+        .on('pointermove',event => {
+          const pointer = d3.pointer(event,node);
+          const pointerX = Math.max(margin.left,Math.min(width - margin.right,pointer[0]));
+          const km = x.invert(pointerX);
+          const found = findPoint(km);
+          const elevation = Math.round(found.elevation);
+          const pointY = y(elevation);
+          hoverGuide.attr('x1',pointerX).attr('x2',pointerX).style('display',null);
+          hoverDot.attr('cx',pointerX).attr('cy',pointY).attr('stroke',colors[found.day.day - 1]).style('display',null);
+          tooltip.hidden = false;
+          tooltip.classList.toggle('is-left',pointerX > width * .72);
+          tooltip.style.left = pointerX + 'px';
+          tooltip.style.top = pointY + 'px';
+          tooltip.innerHTML = `<strong>D${found.day.day} · ${found.day.from} → ${found.day.to}</strong><br>累计约 ${Math.round(km).toLocaleString('zh-CN')} km · 海拔约 ${elevation.toLocaleString('zh-CN')} m`;
+        })
+        .on('pointerleave',() => {
+          hoverGuide.style('display','none');
+          hoverDot.style('display','none');
+          tooltip.hidden = true;
+        });
     }
 
     function renderLegend() {
@@ -599,16 +1100,22 @@
     }
 
     let resizeTimer;
-    function renderAll() {
-      renderDays();
+    function redrawVisuals() {
       drawOverview();
-      renderLegend();
+      document.querySelectorAll('.day-map').forEach(node => drawDayMap(node,days[Number(node.dataset.day) - 1]));
+      renderElevationProfile();
+      bindMapTools();
     }
     window.addEventListener('resize',() => {
       window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(renderAll,160);
+      resizeTimer = window.setTimeout(() => {
+        mapZoomStates.clear();
+        redrawVisuals();
+      },160);
     });
-    renderAll();
+    renderDays();
+    renderLegend();
+    redrawVisuals();
   })();
   </script>
 </body>
